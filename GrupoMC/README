@@ -1,0 +1,6 @@
+CESAR MARROQUIN
+JAVIER CANIZ
+
+javac compiler/Compiler.java scanner/Lexer.java scanner/Tokens.java
+java -cp grupoNN:. Compiler <filename> -target <target>
+java compiler.Compiler texto.txt -target scan
