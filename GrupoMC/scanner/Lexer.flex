@@ -54,13 +54,16 @@ break|
 true|
 false|
 void|
-program|
+Program|
 class|
 boolean|
 type|
 true|
 main|
 false|
+VarDecl|
+FunDecl|
+Block|
 continue {lexeme = yytext(); line =yyline; column=yycolumn;return RESERVADAS;}
 
 {espacio} {/*Ignore*/}
