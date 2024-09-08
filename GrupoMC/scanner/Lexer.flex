@@ -68,6 +68,8 @@ continue {lexeme = yytext(); line =yyline; column=yycolumn;return RESERVADAS;}
 
 {espacio} {/*Ignore*/}
 "//".* {/*Ignore*/}
+"/*"([^*]|\*+[^*/])*\*+\/ { /*Ignore*/ }
+
 
 
 
