@@ -1,0 +1,79 @@
+// Define the package (optional)
+package parser;
+
+// Import necessary Java classes
+import java_cup.runtime.*;
+import compiler.Program;
+import compiler.StmtList;
+import compiler.Stmt;
+import compiler.Expr;
+
+// Define the class name for the parser
+parser code {:
+  // Custom parser code can be added here if needed
+:};
+
+// Define the terminals (tokens)
+terminal int ASSIGN, SUS_ASIGN, SUM_ASIGN, SUM, SUS, MULTIPLICATION, DIVIDE, MOD;
+terminal int LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL, EQUAL, DIFFERENT, AND, OR;
+terminal int OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET, OPEN_PARE, CLOSE_PARE;
+terminal int NOT, SEMICOLON, COMMA, DOT;
+terminal int CHAR_LITERAL, STRING_LITERAL, HEX_LITERAL, INT_LITERAL, HEX_DIGIT, ID, ERROR;
+terminal int RESERVADAS, BREAK, CONTINUE; // Added BREAK and CONTINUE
+
+// Define non-terminal symbols
+non terminal Program program;
+non terminal Expr expr;
+non terminal Stmt stmt;
+non terminal StmtList stmt_list;
+
+// Define precedence and associativity
+precedence left OR;
+precedence left AND;
+precedence left EQUAL, DIFFERENT;
+precedence left LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL;
+precedence left SUM, SUS;
+precedence left MULTIPLICATION, DIVIDE, MOD;
+
+// Start symbol
+start with program;
+
+// Define grammar rules
+
+// Program structure
+program ::= stmt_list;
+
+stmt_list ::= stmt_list stmt
+            | stmt;
+
+// Example for handling statements
+stmt ::= ID ASSIGN expr SEMICOLON
+       | ID OPEN_PARE expr CLOSE_PARE SEMICOLON
+       | OPEN_BRACE stmt_list CLOSE_BRACE
+       | RESERVADAS OPEN_PARE expr CLOSE_PARE stmt
+       | RESERVADAS OPEN_PARE expr SEMICOLON expr SEMICOLON expr CLOSE_PARE stmt
+       | RESERVADAS expr SEMICOLON
+       | BREAK SEMICOLON
+       | CONTINUE SEMICOLON
+       | expr SEMICOLON;
+
+// Expressions
+expr ::= expr SUM expr
+       | expr SUS expr
+       | expr MULTIPLICATION expr
+       | expr DIVIDE expr
+       | expr MOD expr
+       | expr LESS_THAN expr
+       | expr MORE_THAN expr
+       | expr LESS_THAN_OR_EQUAL expr
+       | expr MORE_THAN_OR_EQUAL expr
+       | expr EQUAL expr
+       | expr DIFFERENT expr
+       | expr AND expr
+       | expr OR expr
+       | OPEN_PARE expr CLOSE_PARE
+       | ID
+       | INT_LITERAL
+       | CHAR_LITERAL
+       | STRING_LITERAL
+       | HEX_LITERAL;
