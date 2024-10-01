@@ -6,6 +6,10 @@
 package parser;
 
 import java_cup.runtime.*;
+import parser.Program;
+import parser.StmtList;
+import parser.Stmt;
+import parser.Expr;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.

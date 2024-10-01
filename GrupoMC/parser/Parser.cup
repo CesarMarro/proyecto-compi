@@ -3,10 +3,12 @@ package parser;
 
 // Import necessary Java classes
 import java_cup.runtime.*;
-import compiler.Program;
-import compiler.StmtList;
-import compiler.Stmt;
-import compiler.Expr;
+import parser.Program;
+import parser.StmtList;
+import parser.Stmt;
+import parser.Expr;
+
+
 
 // Define the class name for the parser
 parser code {:
