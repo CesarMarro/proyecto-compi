@@ -1,12 +1,14 @@
 package scanner;
-import static scanner.Tokens.*;
 
+
+import java_cup.runtime.Symbol;
 %%
 %class Lexer
-%type Tokens
+%type java_cup.runtime.Symbol
+%cup 
+%full
 %line
-%column
-
+%char
 
 string_literal = ([\"][^\".]+[\"])
 char_literal = ([\'][^\'.][\'])
@@ -71,15 +73,15 @@ continue {lexeme = yytext(); line =yyline; column=yycolumn;return RESERVADAS;}
 
 
 
-"=" {lexeme = yytext(); line =yyline; column=yycolumn;return ASSIGN;}
-"-=" {lexeme = yytext(); line =yyline; column=yycolumn;return SUS_ASIGN;}
-"+=" {lexeme = yytext(); line =yyline; column=yycolumn;return SUM_ASIGN;}
-"+" {lexeme = yytext(); line =yyline; column=yycolumn;return SUM;}
-"-" {lexeme = yytext(); line =yyline; column=yycolumn;return SUS;}
-"*" {lexeme = yytext(); line =yyline; column=yycolumn;return MULTIPLICATION;}
-"/" {lexeme = yytext(); line =yyline; column=yycolumn;return DIVIDE;}
-"%" {lexeme = yytext(); line =yyline; column=yycolumn;return MOD;}
-"<" {lexeme = yytext(); line =yyline; column=yycolumn;return LESS_THAN;}
+"="                {return new Symbol(sym.ASSIGN, yychar, yyline, yytext());}
+"-="               {return new Symbol(sym.SUS_ASIGN, yychar, yyline, yytext());}
+"+="               {return new Symbol(sym.SUM_ASIGN, yychar, yyline, yytext());}
+"+"                {return new Symbol(sym.SUM, yychar, yyline, yytext());}
+"-"                {return new Symbol(sym.SUS, yychar, yyline, yytext());}
+"*"                {return new Symbol(sym.MULTIPLICATION, yychar, yyline, yytext());}
+"/"                {return new Symbol(sym.DIVIDE, yychar, yyline, yytext());}
+"%"                {return new Symbol(sym.MOD, yychar, yyline, yytext());}
+"<"                {return new Symbol(sym.GREATER, yychar, yyline, yytext());}
 ">" {lexeme = yytext(); line =yyline; column=yycolumn;return MORE_THAN;}
 "<=" {lexeme = yytext(); line =yyline; column=yycolumn;return LESS_THAN_OR_EQUAL;}
 ">=" {lexeme = yytext(); line =yyline; column=yycolumn;return MORE_THAN_OR_EQUAL;}

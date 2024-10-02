@@ -3,10 +3,6 @@ package parser;
 
 // Import necessary Java classes
 import java_cup.runtime.*;
-import parser.Program;
-import parser.StmtList;
-import parser.Stmt;
-import parser.Expr;
 
 
 
@@ -24,10 +20,10 @@ terminal int CHAR_LITERAL, STRING_LITERAL, HEX_LITERAL, INT_LITERAL, HEX_DIGIT, 
 terminal int RESERVADAS, BREAK, CONTINUE; // Added BREAK and CONTINUE
 
 // Define non-terminal symbols
-non terminal Program program;
-non terminal Expr expr;
-non terminal Stmt stmt;
-non terminal StmtList stmt_list;
+non terminal  program;
+non terminal  expr;
+non terminal  stmt;
+non terminal  stmt_list;
 
 // Define precedence and associativity
 precedence left OR;
