@@ -1,0 +1,102 @@
+
+/* Importing necessary packages */
+import java_cup.runtime.*;
+
+parser code {:
+    /* Custom parser code if necessary */
+:};
+
+/* Terminals (Tokens) */
+terminal boolean, break, callout, class_kw, continue, else, false, for, if, int, return, true, void;
+terminal char SEMICOLON, COMMA, LBRACE, RBRACE, LBRACKET, RBRACKET, LPAREN, RPAREN, ASSIGN;
+terminal char PLUS, MINUS, MULT, DIV, MOD, AND, OR, NOT, LT, GT, LE, GE, EQ, NE;
+terminal int int_literal;
+terminal String id, string_literal;
+
+/* Non-Terminals */
+non terminal Program program;
+non terminal FieldDecl field_decl;
+non terminal FieldDeclList field_decl_list;
+non terminal MethodDecl method_decl;
+non terminal MethodDeclList method_decl_list;
+non terminal Block block;
+non terminal VarDecl var_decl;
+non terminal VarDeclList var_decl_list;
+non terminal Type type;
+non terminal Statement statement;
+non terminal StatementList statement_list;
+non terminal Expr expr;
+non terminal ExprList expr_list;
+non terminal MethodCall method_call;
+non terminal AssignOp assign_op;
+non terminal Location location;
+non terminal Literal literal;
+non terminal CalloutArg callout_arg;
+non terminal CalloutArgList callout_arg_list;
+non terminal BinOp bin_op;
+non terminal ArithOp arith_op;
+non terminal RelOp rel_op;
+non terminal EqOp eq_op;
+non terminal CondOp cond_op;
+non terminal IdList id_list;
+
+/* Grammar Rules */
+program ::= class_kw id LBRACE field_decl_list method_decl_list RBRACE {: RESULT = program; :};
+
+field_decl_list ::= field_decl_list field_decl | /* empty */ ;
+field_decl ::= type id_list SEMICOLON {: /* Actions for field declaration */ :};
+
+id_list ::= id_list COMMA id | id; /* Declaration of id_list */
+
+method_decl_list ::= method_decl_list method_decl | /* empty */ ;
+method_decl ::= type id LPAREN param_list RPAREN block {: /* Actions for method declaration */ :};
+
+block ::= LBRACE var_decl_list statement_list RBRACE {: /* Actions for block */ :};
+
+var_decl_list ::= var_decl_list var_decl | /* empty */ ;
+var_decl ::= type id_list SEMICOLON {: /* Actions for variable declaration */ :};
+
+type ::= int | boolean;
+
+statement_list ::= statement_list statement | /* empty */ ;
+statement ::= location assign_op expr SEMICOLON 
+            | method_call SEMICOLON
+            | if LPAREN expr RPAREN block else block 
+            | for id ASSIGN expr COMMA expr block 
+            | return expr SEMICOLON
+            | break SEMICOLON
+            | continue SEMICOLON
+            | block;
+
+assign_op ::= ASSIGN | PLUS ASSIGN | MINUS ASSIGN;
+
+expr_list ::= expr_list COMMA expr | expr | /* empty */;
+expr ::= location
+       | method_call
+       | literal
+       | expr bin_op expr
+       | MINUS expr
+       | NOT expr
+       | LPAREN expr RPAREN;
+
+location ::= id | id LBRACKET expr RBRACKET;
+
+literal ::= int_literal | string_literal | true | false;
+
+method_call ::= id LPAREN expr_list RPAREN | callout LPAREN string_literal COMMA callout_arg_list RPAREN;
+
+callout_arg_list ::= callout_arg_list COMMA callout_arg | callout_arg | /* empty */;
+callout_arg ::= expr | string_literal;
+
+bin_op ::= arith_op | rel_op | eq_op | cond_op;
+
+arith_op ::= PLUS | MINUS | MULT | DIV | MOD;
+
+rel_op ::= LT | GT | LE | GE;
+
+eq_op ::= EQ | NE;
+
+cond_op ::= AND | OR;
+
+
+

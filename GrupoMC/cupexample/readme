@@ -1,0 +1,2 @@
+PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar GrupoMC/cupexample/Parser.java GrupoMC/cupexample/scanner.java GrupoMC/cupexample/sym.java   
+java -cp ".;C:\Users\Checha\Escritorio\GitHub\compi\lib\java-cup-11b.jar" Main
