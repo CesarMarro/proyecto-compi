@@ -1,4 +1,4 @@
-package scanner;
+package parser;
 
 
 import java_cup.runtime.Symbol;
@@ -66,7 +66,7 @@ false|
 VarDecl|
 FunDecl|
 Block|
-continue {lexeme = yytext(); line =yyline; column=yycolumn;return RESERVADAS;}
+continue                 {return new Symbol(sym.RESERVADAS, yychar, yyline, yytext());}
 
 {espacio} {/*Ignore*/}
 "//".* {/*Ignore*/}
@@ -81,32 +81,32 @@ continue {lexeme = yytext(); line =yyline; column=yycolumn;return RESERVADAS;}
 "*"                {return new Symbol(sym.MULTIPLICATION, yychar, yyline, yytext());}
 "/"                {return new Symbol(sym.DIVIDE, yychar, yyline, yytext());}
 "%"                {return new Symbol(sym.MOD, yychar, yyline, yytext());}
-"<"                {return new Symbol(sym.GREATER, yychar, yyline, yytext());}
-">" {lexeme = yytext(); line =yyline; column=yycolumn;return MORE_THAN;}
-"<=" {lexeme = yytext(); line =yyline; column=yycolumn;return LESS_THAN_OR_EQUAL;}
-">=" {lexeme = yytext(); line =yyline; column=yycolumn;return MORE_THAN_OR_EQUAL;}
-"==" {lexeme = yytext(); line =yyline; column=yycolumn;return EQUAL;}
-"!=" {lexeme = yytext(); line =yyline; column=yycolumn;return DIFFERENT;}
-"&&" {lexeme = yytext(); line =yyline; column=yycolumn;return AND;}
-"||" {lexeme = yytext(); line =yyline; column=yycolumn;return OR;}
+"<"                {return new Symbol(sym.LESS_THAN, yychar, yyline, yytext());}
+">"                {return new Symbol(sym.MORE_THAN, yychar, yyline, yytext());}
+"<="                {return new Symbol(sym.LESS_THAN_OR_EQUAL, yychar, yyline, yytext());}
+">="                {return new Symbol(sym.MORE_THAN_OR_EQUAL, yychar, yyline, yytext());}
+"=="                {return new Symbol(sym.EQUAL, yychar, yyline, yytext());}
+"!="                {return new Symbol(sym.DIFFERENT, yychar, yyline, yytext());}
+"&&"                {return new Symbol(sym.AND, yychar, yyline, yytext());}
+"||"                {return new Symbol(sym.OR, yychar, yyline, yytext());}
 
-"{" {lexeme = yytext(); line =yyline; column=yycolumn;return OPEN_BRACE;}
-"}" {lexeme = yytext(); line =yyline; column=yycolumn;return CLOSE_BRACE;}
-"[" {lexeme = yytext(); line =yyline; column=yycolumn;return OPEN_BRACKET;}
-"]" {lexeme = yytext(); line =yyline; column=yycolumn;return CLOSE_BRACKET;}
-"(" {lexeme = yytext(); line =yyline; column=yycolumn;return OPEN_PARE;}
-")" {lexeme = yytext(); line =yyline; column=yycolumn;return CLOSE_PARE;}
-"!" {lexeme = yytext(); line =yyline; column=yycolumn;return NOT;}
-";" {lexeme = yytext(); line =yyline; column=yycolumn;return SEMICOLON;}
-"," {lexeme = yytext(); line =yyline; column=yycolumn;return COMMA;}
-"." {lexeme = yytext(); line =yyline; column=yycolumn;return DOT;}
+"{"                {return new Symbol(sym.OPEN_BRACE, yychar, yyline, yytext());}
+"}"                {return new Symbol(sym.CLOSE_BRACE, yychar, yyline, yytext());}
+"["                {return new Symbol(sym.OPEN_BRACKET, yychar, yyline, yytext());}
+"]"                {return new Symbol(sym.CLOSE_BRACKET, yychar, yyline, yytext());}
+"("                {return new Symbol(sym.OPEN_PARE, yychar, yyline, yytext());}
+")"                {return new Symbol(sym.CLOSE_PARE, yychar, yyline, yytext());}
+"!"                {return new Symbol(sym.NOT, yychar, yyline, yytext());}
+";"                {return new Symbol(sym.SEMICOLON, yychar, yyline, yytext());}
+","                {return new Symbol(sym.COMMA, yychar, yyline, yytext());}
+"."                {return new Symbol(sym.DOT, yychar, yyline, yytext());}
 
-{char_literal} {lexeme = yytext(); line =yyline; column=yycolumn;return CHAR_LITERAL;}
-{string_literal} {lexeme = yytext(); line =yyline; column=yycolumn;return STRING_LITERAL;}
-{hex_literal} {lexeme = yytext(); line =yyline; column=yycolumn;return HEX_LITERAL;}
-{int_literal} {lexeme = yytext(); line =yyline; column=yycolumn;return INT_LITERAL;}
-{hex_digit} {lexeme = yytext(); line =yyline; column=yycolumn;return HEX_DIGIT;}
-{id} {lexeme = yytext(); line =yyline; column=yycolumn;return ID;}
+{char_literal}                 {return new Symbol(sym.CHAR_LITERAL, yychar, yyline, yytext());}
+{string_literal}                 {return new Symbol(sym.STRING_LITERAL, yychar, yyline, yytext());}
+{hex_literal}                {return new Symbol(sym.HEX_LITERAL, yychar, yyline, yytext());}
+{int_literal}                {return new Symbol(sym.INT_LITERAL, yychar, yyline, yytext());}
+{hex_digit}                {return new Symbol(sym.HEX_DIGIT, yychar, yyline, yytext());}
+{id}                {return new Symbol(sym.ID, yychar, yyline, yytext());}
 
 
- . {lexeme = yytext(); line =yyline; column=yycolumn;return ERROR;}
+ .                {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
