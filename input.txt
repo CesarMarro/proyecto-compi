@@ -1,0 +1,8 @@
+xd = 3 + x4 * 5;
+xd = 3 + x4 * 5;
+if (x > 5) {
+        print("x is greater than 5");
+    }
+int main() {
+    int x = 10;
+}

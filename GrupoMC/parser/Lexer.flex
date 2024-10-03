@@ -42,31 +42,30 @@ espacio=[ \t\r\n]+
         return column;
     }
 %}
-
 %%
 
-int|
-callout|
-if|
-for|
-while|
-else|
-return|
-break|
-true|
-false|
-void|
-Program|
-class|
-boolean|
-type|
-true|
-main|
-false|
-VarDecl|
-FunDecl|
-Block|
-continue                 {return new Symbol(sym.RESERVADAS, yychar, yyline, yytext());}
+int                     {return new Symbol(sym.INT, yychar, yyline, yytext());}
+callout                 {return new Symbol(sym.CALLOUT, yychar, yyline, yytext());}
+if                      {return new Symbol(sym.IF, yychar, yyline, yytext());}
+for                     {return new Symbol(sym.FOR, yychar, yyline, yytext());}
+while                   {return new Symbol(sym.WHILE, yychar, yyline, yytext());}
+else                    {return new Symbol(sym.ELSE, yychar, yyline, yytext());}
+return                  {return new Symbol(sym.RETURN, yychar, yyline, yytext());}
+break                   {return new Symbol(sym.BREAK, yychar, yyline, yytext());}
+true                    {return new Symbol(sym.TRUE, yychar, yyline, yytext());}
+false                   {return new Symbol(sym.FALSE, yychar, yyline, yytext());}
+void                    {return new Symbol(sym.VOID, yychar, yyline, yytext());}
+Program                 {return new Symbol(sym.PROGRAM, yychar, yyline, yytext());}
+class                   {return new Symbol(sym.CLASS, yychar, yyline, yytext());}
+boolean                 {return new Symbol(sym.BOOLEAN, yychar, yyline, yytext());}
+type                    {return new Symbol(sym.TYPE, yychar, yyline, yytext());}
+true                    {return new Symbol(sym.TRUE, yychar, yyline, yytext());}
+main                    {return new Symbol(sym.MAIN, yychar, yyline, yytext());}
+false                   {return new Symbol(sym.FALSE, yychar, yyline, yytext());}
+VarDecl                 {return new Symbol(sym.VARDECL, yychar, yyline, yytext());}
+FunDecl                 {return new Symbol(sym.FUNDECL, yychar, yyline, yytext());}
+Block                   {return new Symbol(sym.BLOCK, yychar, yyline, yytext());}
+continue                 {return new Symbol(sym.CONTINUE, yychar, yyline, yytext());}
 
 {espacio} {/*Ignore*/}
 "//".* {/*Ignore*/}
@@ -110,3 +109,6 @@ continue                 {return new Symbol(sym.RESERVADAS, yychar, yyline, yyte
 
 
  .                {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
+
+
+
