@@ -17,33 +17,51 @@ public class sym {
   public static final int LESS_THAN_OR_EQUAL = 12;
   public static final int CONTINUE = 37;
   public static final int OPEN_PARE = 22;
+  public static final int INT = 44;
+  public static final int FOR = 42;
   public static final int NOT = 24;
   public static final int SEMICOLON = 25;
   public static final int AND = 16;
+  public static final int BLOCK = 55;
+  public static final int CALLOUT = 39;
+  public static final int TYPE = 48;
   public static final int OR = 17;
   public static final int COMMA = 26;
+  public static final int CLASS = 40;
   public static final int HEX_LITERAL = 30;
   public static final int DIFFERENT = 15;
+  public static final int MAIN = 51;
+  public static final int IF = 43;
   public static final int ASSIGN = 2;
   public static final int DOT = 27;
   public static final int ID = 33;
+  public static final int BOOLEAN = 38;
   public static final int EOF = 0;
+  public static final int RETURN = 45;
   public static final int EQUAL = 14;
+  public static final int TRUE = 49;
+  public static final int PROGRAM = 50;
   public static final int error = 1;
+  public static final int VARDECL = 53;
   public static final int OPEN_BRACE = 18;
   public static final int MOD = 9;
   public static final int RESERVADAS = 35;
   public static final int CLOSE_BRACKET = 21;
   public static final int BREAK = 36;
   public static final int OPEN_BRACKET = 20;
+  public static final int VOID = 46;
   public static final int ERROR = 34;
+  public static final int ELSE = 41;
+  public static final int WHILE = 47;
   public static final int HEX_DIGIT = 32;
   public static final int SUS = 6;
   public static final int SUM = 5;
   public static final int CLOSE_BRACE = 19;
+  public static final int FALSE = 52;
   public static final int MORE_THAN = 11;
   public static final int LESS_THAN = 10;
   public static final int MORE_THAN_OR_EQUAL = 13;
+  public static final int FUNDECL = 54;
   public static final int MULTIPLICATION = 7;
   public static final int INT_LITERAL = 31;
   public static final String[] terminalNames = new String[] {
@@ -84,7 +102,25 @@ public class sym {
   "ERROR",
   "RESERVADAS",
   "BREAK",
-  "CONTINUE"
+  "CONTINUE",
+  "BOOLEAN",
+  "CALLOUT",
+  "CLASS",
+  "ELSE",
+  "FOR",
+  "IF",
+  "INT",
+  "RETURN",
+  "VOID",
+  "WHILE",
+  "TYPE",
+  "TRUE",
+  "PROGRAM",
+  "MAIN",
+  "FALSE",
+  "VARDECL",
+  "FUNDECL",
+  "BLOCK"
   };
 }
 

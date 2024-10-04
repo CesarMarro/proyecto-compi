@@ -59,9 +59,7 @@ Program                 {return new Symbol(sym.PROGRAM, (int)yychar, yyline, yyt
 class                   {return new Symbol(sym.CLASS, (int)yychar, yyline, yytext());}
 boolean                 {return new Symbol(sym.BOOLEAN, (int)yychar, yyline, yytext());}
 type                    {return new Symbol(sym.TYPE, (int)yychar, yyline, yytext());}
-true                    {return new Symbol(sym.TRUE, (int)yychar, yyline, yytext());}
 main                    {return new Symbol(sym.MAIN, (int)yychar, yyline, yytext());}
-false                   {return new Symbol(sym.FALSE, (int)yychar, yyline, yytext());}
 VarDecl                 {return new Symbol(sym.VARDECL, (int)yychar, yyline, yytext());}
 FunDecl                 {return new Symbol(sym.FUNDECL, (int)yychar, yyline, yytext());}
 Block                   {return new Symbol(sym.BLOCK, (int)yychar, yyline, yytext());}
