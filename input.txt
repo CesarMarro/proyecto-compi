@@ -1,8 +1,16 @@
-xd = 3 + x4 * 5;
-xd = 3 + x4 * 5;
-if (x > 5) {
-        print("x is greater than 5");
+class Program {
+    int factorial(int n) {
+        int result = 1;
+        for (int i = 1; i <= n; i++) {
+            result = result * i;
+        }
+        return result;
     }
-int main() {
-    int x = 10;
+
+    void main() {
+        int num = 5;
+        int fact;
+        fact = factorial(num);
+        print(fact);
+    }
 }

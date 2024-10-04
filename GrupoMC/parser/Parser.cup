@@ -55,6 +55,8 @@ stmt ::= ID ASSIGN expr SEMICOLON
        | RESERVADAS expr SEMICOLON
        | BREAK SEMICOLON
        | CONTINUE SEMICOLON
+       | INT expr SEMICOLON
+       | CLASS PROGRAM OPEN_BRACE expr CLOSE_BRACE
        | expr SEMICOLON;
 
 // Expressions
