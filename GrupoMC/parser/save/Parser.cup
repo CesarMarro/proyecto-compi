@@ -1,3 +1,8 @@
+package parser;
+
+// Import necessary Java classes
+import java_cup.runtime.*;
+
 // Define the terminals (tokens)
 terminal CLASS, PROGRAM, VOID, INT, BOOLEAN, IF, ELSE, FOR, RETURN, BREAK, CONTINUE, CALLOUT, TRUE, FALSE;
 terminal ASSIGN, SUS_ASIGN, SUM_ASIGN, SUM, SUS, MULTIPLICATION, DIVIDE, MOD;
@@ -21,8 +26,6 @@ nonterminal expr;
 nonterminal assign_op;
 nonterminal method_call;
 nonterminal callout_arg;
-nonterminal callout_args;
-nonterminal callout_args_rest;
 nonterminal bin_op;
 nonterminal arith_op;
 nonterminal rel_op;
@@ -38,6 +41,8 @@ nonterminal param;
 nonterminal param_list_rest;
 nonterminal var_decls;
 nonterminal statements;
+nonterminal callout_args;
+nonterminal callout_args_rest;
 nonterminal if_statement;
 nonterminal else_clause;
 
@@ -49,45 +54,43 @@ precedence left LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL;
 precedence left SUM, SUS;
 precedence left MULTIPLICATION, DIVIDE, MOD;
 
-// Declare precedence for INT and BOOLEAN
-precedence left INT, BOOLEAN;
-
 // Production rules
-program ::= CLASS PROGRAM OPEN_BRACE field_decls method_decls CLOSE_BRACE ;
+program ::= CLASS PROGRAM OPEN_BRACE field_decls method_decls CLOSE_BRACE 
+{ System.out.println("Parsed program: " + $1 + " " + $2); };
 
-field_decls ::= field_decl field_decls
-              | /* empty */ ; // Allowing empty field declarations
+field_decls ::= field_decl field_decls;
 
 field_decl ::= type ID SEMICOLON 
             | type ID ASSIGN expr SEMICOLON ;
 
 method_decls ::= method_decl method_decls
-              | /* empty */ ; // Allowing empty method declarations
+              | /* empty */ ;
 
-method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block
-              | VOID ID OPEN_PARE param_list CLOSE_PARE block ;
+method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block ;
 
 param_list ::= param param_list_rest
-            | /* empty */ ; // Allowing empty parameter list
+            | /* empty */ ;
 
 param_list_rest ::= COMMA param param_list_rest
-                | /* empty */ ; // Allowing additional parameters
+                | /* empty */ ;
 
 param ::= type ID ;
 
 type ::= INT
-       | BOOLEAN ;
+       | BOOLEAN
+       | VOID
+       | ID ;
 
 var_decl ::= type ID SEMICOLON 
           | type ID ASSIGN expr SEMICOLON ;
 
 block ::= OPEN_BRACE var_decls statements CLOSE_BRACE ;
 
-var_decls ::= var_decl var_decls
-            | /* empty */ ; // Allowing empty variable declarations
+var_decls ::= var_decl var_decls;
 
-statements ::= statement statements
-             | /* empty */ ; // Allowing empty statements
+
+statements ::= statement statements;
+
 
 statement ::= location assign_op expr SEMICOLON 
             | method_call SEMICOLON 
@@ -99,9 +102,11 @@ statement ::= location assign_op expr SEMICOLON
             | block 
             ;
 
-if_statement ::= IF OPEN_PARE expr CLOSE_PARE statement else_clause ;
+if_statement ::= IF OPEN_PARE expr CLOSE_PARE statement else_clause
+               ;
 
-else_clause ::= ELSE statement ;
+else_clause ::= ELSE statement;
+
 
 location ::= ID 
            | ID OPEN_BRACKET expr CLOSE_BRACKET ;
@@ -113,10 +118,10 @@ assign_op ::= ASSIGN
 method_call ::= ID OPEN_PARE callout_args CLOSE_PARE ;
 
 callout_args ::= callout_arg callout_args_rest
-              | /* empty */ ; // Allowing empty callout arguments
+              | /* empty */ ;
 
 callout_args_rest ::= COMMA callout_arg callout_args_rest
-                  | /* empty */ ; // Allowing additional callout arguments
+                  | /* empty */ ;
 
 callout_arg ::= expr 
              | STRING_LITERAL ;

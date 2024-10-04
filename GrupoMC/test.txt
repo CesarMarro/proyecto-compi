@@ -1,31 +1,15 @@
 class Program {
-    @
-    çà
-    1valor
-    //hola que tal 
-    /* Este es un comentario 
-   de bloque que puede tener
-   varias líneas */
+    
     boolean entrada;
     int numeros;
 
-    int suma(int valor1, int valor2){
-        int Res;
-        res = valor1 + valor2;
-        return res;
-    }
+ 
     void main(){
-        int resultado1, resultado2;
+        int resultado1;
         boolean resultado3;
         entrada = true;
 
-        if (entrada == true){
-            resultado1 = suma(3,2);
-        }
-        entrada = false;
-        if (entrada == true){
-            resultado1 = resta(3,2);
-        }
+       
         
     }
 }
