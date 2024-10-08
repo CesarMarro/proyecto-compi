@@ -64,6 +64,7 @@ espacio=[ \t\r\n]+
 
 {espacio} { /* Ignore whitespace */ }
 "//".* { /* Ignore comments */ }
+"/*"([^*]|\*+[^*/])*\*+\/ { /*Ignore*/ }
 
 // SYMBOLS AND OPERATORS
 "=" { return new Symbol(sym.ASSIGN, yyline + 1, yycolumn + 1, yytext()); }
