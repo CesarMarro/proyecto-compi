@@ -25,6 +25,11 @@ class Program {
         entrada = false;
         if (entrada == true){
             resultado1 = resta(3,2);
+<<<<<<< Updated upstream
+=======
+        } else {
+            resultado1 = suma(3,4);
+>>>>>>> Stashed changes
         }
         
     }
