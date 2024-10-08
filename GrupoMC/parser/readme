@@ -1,5 +1,4 @@
-PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar GrupoMC/cupexample/Parser.java GrupoMC/cupexample/scanner.java GrupoMC/cupexample/sym.java   
-java -cp ".;C:\Users\Checha\Escritorio\GitHub\compi\lib\java-cup-11b.jar" Main
+Grupo: Cesar Marroquin y Javier Caniz
 
 PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar GrupoMC/parser/parser.java GrupoMC/parser/Lexer.java GrupoMC/parser/sym.java    
 PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar GrupoMC/parser/parser.java GrupoMC/parser/Lexer.java GrupoMC/parser/sym.java GrupoMc/parser/test.java
