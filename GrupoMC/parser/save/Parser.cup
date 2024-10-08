@@ -1,10 +1,9 @@
-// JavaCUP specification file
-
-// Package declaration
 package parser;
 
+// Import necessary Java classes
+import java_cup.runtime.*;
 
-// **Terminal declarations**
+// Define the terminals (tokens)
 terminal CLASS, PROGRAM, VOID, INT, BOOLEAN, IF, ELSE, FOR, RETURN, BREAK, CONTINUE, CALLOUT, TRUE, FALSE;
 terminal ASSIGN, SUS_ASIGN, SUM_ASIGN, SUM, SUS, MULTIPLICATION, DIVIDE, MOD;
 terminal LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL, EQUAL, DIFFERENT, AND, OR;
@@ -12,34 +11,20 @@ terminal OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET, OPEN_PARE, CLOSE_
 terminal NOT, SEMICOLON, COMMA, DOT;
 terminal CHAR_LITERAL, STRING_LITERAL, HEX_LITERAL, INT_LITERAL, HEX_DIGIT, ID, ERROR;
 
-// **Nonterminal declarations**
+// Declare non-terminals
 nonterminal program;
-nonterminal decl_list;
-nonterminal declaration;
 nonterminal field_decl;
-nonterminal var_decl_list;
-nonterminal var_decl;
+nonterminal field_decls;
 nonterminal method_decl;
+nonterminal method_decls;
 nonterminal type;
-nonterminal param_list;
-nonterminal param_list_nonempty;
-nonterminal param;
-nonterminal block;
-nonterminal opt_var_decls;
-nonterminal var_decls;
-nonterminal var_decl_list_block;
-nonterminal var_decl_block;
-nonterminal var_decl_block_item;
-nonterminal opt_statements;
-nonterminal statements;
-nonterminal statement_list;
+nonterminal var_decl;
 nonterminal statement;
+nonterminal block;
 nonterminal location;
 nonterminal expr;
 nonterminal assign_op;
 nonterminal method_call;
-nonterminal opt_callout_args;
-nonterminal callout_arg_list;
 nonterminal callout_arg;
 nonterminal bin_op;
 nonterminal arith_op;
@@ -50,10 +35,18 @@ nonterminal literal;
 nonterminal int_literal;
 nonterminal char_literal;
 nonterminal bool_literal;
-nonterminal if_statement;
-nonterminal else_part;
 
-// **Precedence and associativity declarations**
+nonterminal param_list;
+nonterminal param;
+nonterminal param_list_rest;
+nonterminal var_decls;
+nonterminal statements;
+nonterminal callout_args;
+nonterminal callout_args_rest;
+nonterminal if_statement;
+nonterminal else_clause;
+
+// Precedence and associativity
 precedence left OR;
 precedence left AND;
 precedence left EQUAL, DIFFERENT;
@@ -61,127 +54,111 @@ precedence left LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL;
 precedence left SUM, SUS;
 precedence left MULTIPLICATION, DIVIDE, MOD;
 
-// **Start symbol declaration**
-start with program;
+// Production rules
+program ::= CLASS PROGRAM OPEN_BRACE field_decls method_decls CLOSE_BRACE 
+{ System.out.println("Parsed program: " + $1 + " " + $2); };
 
-// **Production rules**
-program ::= CLASS PROGRAM OPEN_BRACE decl_list CLOSE_BRACE ;
+field_decls ::= field_decl field_decls;
 
-decl_list ::= /* empty */
-            | decl_list declaration ;
+field_decl ::= type ID SEMICOLON 
+            | type ID ASSIGN expr SEMICOLON ;
 
-declaration ::= field_decl
-              | method_decl ;
+method_decls ::= method_decl method_decls
+              | /* empty */ ;
 
-field_decl ::= type var_decl_list SEMICOLON ;
+method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block ;
 
-var_decl_list ::= var_decl_list COMMA var_decl
-                | var_decl ;
+param_list ::= param param_list_rest
+            | /* empty */ ;
 
-var_decl ::= ID
-           | ID ASSIGN expr ;
-
-method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block
-              | VOID ID OPEN_PARE param_list CLOSE_PARE block ;
-
-param_list ::= /* empty */
-             | param_list_nonempty ;
-
-param_list_nonempty ::= param_list_nonempty COMMA param
-                      | param ;
+param_list_rest ::= COMMA param param_list_rest
+                | /* empty */ ;
 
 param ::= type ID ;
 
 type ::= INT
-       | BOOLEAN ;
+       | BOOLEAN
+       | VOID
+       | ID ;
 
-block ::= OPEN_BRACE opt_var_decls opt_statements CLOSE_BRACE ;
+var_decl ::= type ID SEMICOLON 
+          | type ID ASSIGN expr SEMICOLON ;
 
-opt_var_decls ::= /* empty */
-                | var_decls ;
+block ::= OPEN_BRACE var_decls statements CLOSE_BRACE ;
 
-var_decls ::= var_decls var_decl_block
-            | var_decl_block ;
+var_decls ::= var_decl var_decls;
 
-var_decl_block ::= type var_decl_list_block SEMICOLON ;
 
-var_decl_list_block ::= var_decl_list_block COMMA var_decl_block_item
-                      | var_decl_block_item ;
+statements ::= statement statements;
 
-var_decl_block_item ::= ID
-                      | ID ASSIGN expr ;
 
-opt_statements ::= /* empty */
-                 | statements ;
+statement ::= location assign_op expr SEMICOLON 
+            | method_call SEMICOLON 
+            | if_statement 
+            | FOR OPEN_PARE ID ASSIGN expr SEMICOLON expr SEMICOLON expr CLOSE_PARE statement 
+            | RETURN expr SEMICOLON 
+            | BREAK SEMICOLON 
+            | CONTINUE SEMICOLON 
+            | block 
+            ;
 
-statements ::= statements statement
-             | statement ;
+if_statement ::= IF OPEN_PARE expr CLOSE_PARE statement else_clause
+               ;
 
-statement ::= location assign_op expr SEMICOLON
-            | method_call SEMICOLON
-            | if_statement
-            | FOR OPEN_PARE ID ASSIGN expr SEMICOLON expr SEMICOLON expr CLOSE_PARE statement
-            | RETURN expr SEMICOLON
-            | BREAK SEMICOLON
-            | CONTINUE SEMICOLON
-            | block ;
+else_clause ::= ELSE statement;
 
-if_statement ::= IF OPEN_PARE expr CLOSE_PARE statement else_part;
 
-else_part ::= /* empty */
-            | ELSE statement ;
-
-location ::= ID
+location ::= ID 
            | ID OPEN_BRACKET expr CLOSE_BRACKET ;
 
-assign_op ::= ASSIGN
-            | SUM_ASIGN
-            | SUS_ASIGN ;
+assign_op ::= ASSIGN 
+           | SUM_ASIGN 
+           | SUS_ASIGN ;
 
-method_call ::= ID OPEN_PARE opt_callout_args CLOSE_PARE ;
+method_call ::= ID OPEN_PARE callout_args CLOSE_PARE ;
 
-opt_callout_args ::= /* empty */
-                   | callout_arg_list ;
+callout_args ::= callout_arg callout_args_rest
+              | /* empty */ ;
 
-callout_arg_list ::= callout_arg_list COMMA callout_arg
-                   | callout_arg ;
+callout_args_rest ::= COMMA callout_arg callout_args_rest
+                  | /* empty */ ;
 
-callout_arg ::= expr
-              | STRING_LITERAL ;
+callout_arg ::= expr 
+             | STRING_LITERAL ;
 
-expr ::= location
-       | method_call
-       | literal
-       | OPEN_PARE expr CLOSE_PARE
-       | expr bin_op expr ;
+expr ::= location 
+       | method_call 
+       | literal 
+       | expr bin_op expr 
+       | OPEN_PARE expr CLOSE_PARE ;
 
-bin_op ::= arith_op
-         | rel_op
-         | eq_op
-         | cond_op ;
+bin_op ::= arith_op 
+        | rel_op 
+        | eq_op 
+        | cond_op ;
 
-arith_op ::= SUM
-           | SUS
-           | MULTIPLICATION
-           | DIVIDE
-           | MOD ;
+arith_op ::= SUM 
+          | SUS 
+          | MULTIPLICATION 
+          | DIVIDE 
+          | MOD ;
 
-rel_op ::= LESS_THAN
-         | MORE_THAN
-         | LESS_THAN_OR_EQUAL
-         | MORE_THAN_OR_EQUAL ;
+rel_op ::= LESS_THAN 
+        | MORE_THAN 
+        | LESS_THAN_OR_EQUAL 
+        | MORE_THAN_OR_EQUAL ;
 
-eq_op ::= EQUAL
-        | DIFFERENT ;
+eq_op ::= EQUAL 
+       | DIFFERENT ;
 
-cond_op ::= AND
-          | OR ;
+cond_op ::= AND 
+         | OR ;
 
-literal ::= int_literal
-          | char_literal
+literal ::= int_literal 
+          | char_literal 
           | bool_literal ;
 
 int_literal ::= INT_LITERAL ;
 char_literal ::= CHAR_LITERAL ;
-bool_literal ::= TRUE
-               | FALSE ;
+bool_literal ::= TRUE 
+              | FALSE ;
