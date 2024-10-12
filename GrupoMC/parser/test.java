@@ -11,7 +11,7 @@ public class test {
             FileReader fileReader = new FileReader("C:/Users/Checha/Escritorio/GitHub/compi/GrupoMC/test.txt");
             
             // Create a Lexer instance
-            Lexer lexer = new Lexer(fileReader);
+            LexerParser lexer = new LexerParser(fileReader);
             
             // Create a Parser instance
             parser parser = new parser(lexer);

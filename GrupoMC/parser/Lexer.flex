@@ -4,7 +4,7 @@ import java_cup.runtime.Symbol;
 
 %%
 
-%class Lexer
+%class LexerParser
 %type java_cup.runtime.Symbol
 %cup 
 %full

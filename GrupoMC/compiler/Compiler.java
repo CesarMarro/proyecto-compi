@@ -6,10 +6,10 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-// Importar las clases necesarias desde el paquete scanner
-import scanner.Lexer;
-
+import scanner.Lexer;  // Import the scanner Lexer
+import parser.LexerParser;  // Import the parser Lexer
+import parser.parser;  // Import the parser
+import java_cup.runtime.Symbol;  // Import Symbol for parser
 
 public class Compiler {
 
@@ -27,10 +27,12 @@ public class Compiler {
             target = args[2];
         }
 
-        
         switch (target) {
             case "scan":
                 runScanner(filename);
+                break;
+            case "parse":
+                runParser(filename);  // Added case for parsing
                 break;
             default:
                 System.out.println("Unknown target: " + target);
@@ -38,6 +40,7 @@ public class Compiler {
         }
     }
 
+    // Existing scanner method, untouched
     private static void runScanner(String filename) {
         try {
             Path path = Paths.get("").toAbsolutePath().resolve(filename);
@@ -63,6 +66,35 @@ public class Compiler {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+    }
+
+    // New method to run the parser, separate from the scanner
+    private static void runParser(String filename) {
+        try {
+            // Get the absolute path of the file
+            Path path = Paths.get("").toAbsolutePath().resolve(filename);
+            String ruta = path.toString();
+            System.out.println("Ruta absoluta: " + ruta);
+
+            // Create a FileReader for the parser input
+            FileReader fileReader = new FileReader(ruta);
+
+            // Create the parser's lexer instance
+            LexerParser lexer = new LexerParser(fileReader);
+
+            // Create a parser instance
+            parser parser = new parser(lexer);
+
+            // Parse the input file
+            Symbol parseResult = parser.parse();
+
+            // Optionally, print the result of the parsing (for debugging)
+            System.out.println("Parsing completed.");
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
