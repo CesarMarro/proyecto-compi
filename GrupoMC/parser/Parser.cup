@@ -55,11 +55,14 @@ precedence left INT, BOOLEAN;
 // Production rules
 program ::= CLASS PROGRAM OPEN_BRACE field_decls method_decls CLOSE_BRACE ;
 
+decl_common ::= type ID SEMICOLON
+              | type ID ASSIGN expr SEMICOLON
+              ;
+
 field_decls ::= field_decl field_decls
               | /* empty */ ; // Allowing empty field declarations
 
-field_decl ::= type ID SEMICOLON 
-            | type ID ASSIGN expr SEMICOLON ;
+field_decl ::= decl_common;
 
 method_decls ::= method_decl method_decls
               | /* empty */ ; // Allowing empty method declarations
@@ -78,8 +81,7 @@ param ::= type ID ;
 type ::= INT
        | BOOLEAN ;
 
-var_decl ::= type ID SEMICOLON 
-          | type ID ASSIGN expr SEMICOLON ;
+var_decl ::= decl_common;
 
 block ::= OPEN_BRACE var_decls statements CLOSE_BRACE ;
 

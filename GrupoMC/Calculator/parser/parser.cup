@@ -1,0 +1,31 @@
+/* parser.cup */
+
+package parser;
+
+import java_cup.runtime.Symbol;
+import lexer.*;
+
+
+terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal LPAREN, RPAREN;
+terminal Double NUMBER;
+
+non terminal Double expr, term, factor;
+
+start with expr;
+
+//// Grammar rules ////
+
+expr   ::= expr:e1 PLUS term:e2      {: RESULT = e1 + e2; :}
+        | expr:e1 MINUS term:e2     {: RESULT = e1 - e2; :}
+        | term:t                    {: RESULT = t; :}
+        ;
+
+term   ::= term:t1 TIMES factor:f2   {: RESULT = t1 * f2; :}
+        | term:t1 DIVIDE factor:f2  {: RESULT = t1 / f2; :}
+        | factor:f                  {: RESULT = f; :}
+        ;
+
+factor ::= LPAREN expr:e RPAREN      {: RESULT = e; :}
+        | NUMBER:n                   {: RESULT = n; :}
+        ;

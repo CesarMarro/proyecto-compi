@@ -4,3 +4,31 @@ JAVIER CANIZ
 javac compiler/Compiler.java scanner/Lexer.java scanner/Tokens.java
 java -cp grupoNN:. Compiler <filename> -target <target>
 java compiler.Compiler texto.txt -target scan
+
+
+
+
+
+JAVIER
+
+export CLASSPATH=".:$(pwd)/classes:/RutaALaLibreria/java-cup-11b-runtime.jar"
+crear carpeta classes
+export CUP_JAR="/RutaALaLibreria/java-cup-11b.jar"
+luego en la carpeta parser:
+java -jar $Env:CUP_JAR -parser Parser -symbols sym -nonterms parser.cup
+java -jar /rutaAFlex/jflex-1.9.1/lib/jflex-full-1.9.1.jar lexer/lexer.flex
+
+compilacion :
+
+javac -d classes parser/sym.java 
+
+
+###EN CMD!!!###
+
+javac -d classes -cp classes:parser; "%CLASSPATH%" lexer/Lexer.java 
+
+javac -d classes -cp classes;"%CUP_JAR%" parser/Parser.java
+
+javac -d classes -cp classes;"%CUP_JAR%" Main.java 
+
+java -cp classes;"%CUP_JAR%" Main.java
