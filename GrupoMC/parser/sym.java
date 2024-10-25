@@ -8,58 +8,64 @@ package parser;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int DIVIDE = 22;
-  public static final int STRING_LITERAL = 43;
-  public static final int SUM_ASIGN = 18;
-  public static final int SUS_ASIGN = 17;
-  public static final int CHAR_LITERAL = 42;
-  public static final int CLOSE_PARE = 37;
-  public static final int LESS_THAN_OR_EQUAL = 26;
-  public static final int OPEN_PARE = 36;
-  public static final int CONTINUE = 12;
-  public static final int INT = 5;
-  public static final int FOR = 9;
-  public static final int SEMICOLON = 39;
-  public static final int NOT = 38;
-  public static final int AND = 30;
-  public static final int CALLOUT = 13;
-  public static final int OR = 31;
-  public static final int COMMA = 40;
-  public static final int HEX_LITERAL = 44;
-  public static final int CLASS = 2;
-  public static final int DIFFERENT = 29;
-  public static final int ASSIGN = 16;
-  public static final int IF = 7;
-  public static final int ID = 47;
-  public static final int DOT = 41;
+  public static final int DIVIDE = 28;
+  public static final int STRING_LITERAL = 5;
+  public static final int SUM_ASIGN = 24;
+  public static final int SUS_ASIGN = 23;
+  public static final int CHAR_LITERAL = 4;
+  public static final int CLOSE_PARE = 43;
+  public static final int LESS_THAN_OR_EQUAL = 32;
+  public static final int OPEN_PARE = 42;
+  public static final int CONTINUE = 18;
+  public static final int INT = 11;
+  public static final int FOR = 15;
+  public static final int SEMICOLON = 45;
+  public static final int NOT = 44;
+  public static final int AND = 36;
+  public static final int CALLOUT = 19;
+  public static final int OR = 37;
+  public static final int COMMA = 46;
+  public static final int CLASS = 8;
+  public static final int HEX_LITERAL = 6;
+  public static final int DIFFERENT = 35;
+  public static final int ASSIGN = 22;
+  public static final int IF = 13;
+  public static final int DOT = 47;
+  public static final int ID = 2;
   public static final int EOF = 0;
-  public static final int BOOLEAN = 6;
-  public static final int RETURN = 10;
-  public static final int EQUAL = 28;
-  public static final int TRUE = 14;
+  public static final int BOOLEAN = 12;
+  public static final int RETURN = 16;
+  public static final int EQUAL = 34;
+  public static final int TRUE = 20;
   public static final int error = 1;
-  public static final int PROGRAM = 3;
-  public static final int OPEN_BRACE = 32;
-  public static final int MOD = 23;
-  public static final int CLOSE_BRACKET = 35;
-  public static final int BREAK = 11;
-  public static final int OPEN_BRACKET = 34;
-  public static final int VOID = 4;
+  public static final int PROGRAM = 9;
+  public static final int OPEN_BRACE = 38;
+  public static final int MOD = 29;
+  public static final int CLOSE_BRACKET = 41;
+  public static final int OPEN_BRACKET = 40;
+  public static final int BREAK = 17;
+  public static final int VOID = 10;
   public static final int ERROR = 48;
-  public static final int ELSE = 8;
-  public static final int HEX_DIGIT = 46;
-  public static final int SUS = 20;
-  public static final int SUM = 19;
-  public static final int CLOSE_BRACE = 33;
-  public static final int FALSE = 15;
-  public static final int MORE_THAN = 25;
-  public static final int LESS_THAN = 24;
-  public static final int MORE_THAN_OR_EQUAL = 27;
-  public static final int MULTIPLICATION = 21;
-  public static final int INT_LITERAL = 45;
+  public static final int ELSE = 14;
+  public static final int HEX_DIGIT = 7;
+  public static final int SUS = 26;
+  public static final int SUM = 25;
+  public static final int CLOSE_BRACE = 39;
+  public static final int FALSE = 21;
+  public static final int MORE_THAN = 31;
+  public static final int LESS_THAN = 30;
+  public static final int MORE_THAN_OR_EQUAL = 33;
+  public static final int MULTIPLICATION = 27;
+  public static final int INT_LITERAL = 3;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
+  "ID",
+  "INT_LITERAL",
+  "CHAR_LITERAL",
+  "STRING_LITERAL",
+  "HEX_LITERAL",
+  "HEX_DIGIT",
   "CLASS",
   "PROGRAM",
   "VOID",
@@ -100,12 +106,6 @@ public class sym {
   "SEMICOLON",
   "COMMA",
   "DOT",
-  "CHAR_LITERAL",
-  "STRING_LITERAL",
-  "HEX_LITERAL",
-  "INT_LITERAL",
-  "HEX_DIGIT",
-  "ID",
   "ERROR"
   };
 }

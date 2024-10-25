@@ -59,8 +59,9 @@ espacio=[ \t\r\n]+
 "break" { return new Symbol(sym.BREAK, yyline + 1, yycolumn + 1, yytext()); }
 "continue" { return new Symbol(sym.CONTINUE, yyline + 1, yycolumn + 1, yytext()); }
 "callout" { return new Symbol(sym.CALLOUT, yyline + 1, yycolumn + 1, yytext()); }
-"true" { return new Symbol(sym.TRUE, yyline + 1, yycolumn + 1, yytext()); }
-"false" { return new Symbol(sym.FALSE, yyline + 1, yycolumn + 1, yytext()); }
+"true" { return new Symbol(sym.TRUE, yyline + 1, yycolumn + 1, true); }
+"false" { return new Symbol(sym.FALSE, yyline + 1, yycolumn + 1, false); }
+
 
 {espacio} { /* Ignore whitespace */ }
 "//".* { /* Ignore comments */ }
@@ -103,8 +104,10 @@ espacio=[ \t\r\n]+
 {char_literal} { return new Symbol(sym.CHAR_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
 {string_literal} { return new Symbol(sym.STRING_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
 {hex_literal} { return new Symbol(sym.HEX_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
-{int_literal} { return new Symbol(sym.INT_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
 {hex_digit} { return new Symbol(sym.HEX_DIGIT, yyline + 1, yycolumn + 1, yytext()); }
+{int_literal} { return new Symbol(sym.INT_LITERAL, yyline + 1, yycolumn + 1, Integer.parseInt(yytext())); }
+
+
 {id} { return new Symbol(sym.ID, yyline + 1, yycolumn + 1, yytext()); }
 
 . { return new Symbol(sym.ERROR, yyline + 1, yycolumn + 1, yytext()); }

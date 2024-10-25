@@ -1,26 +1,30 @@
 package parser;
 
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java_cup.runtime.Symbol;
+import ast.*;
 
 public class test {
     public static void main(String[] args) {
         try {
-            // Provide the path to your test file here
-            FileReader fileReader = new FileReader("C:/Users/Checha/Escritorio/GitHub/compi/GrupoMC/test.txt");
-            
-            // Create a Lexer instance
+            // Ruta al archivo de prueba
+            // Asegúrate de que esta ruta apunta al archivo de prueba que deseas analizar
+            FileReader fileReader = new FileReader("C:/Users/Chechamilo/Documents/GitHub/proyecto-compi/GrupoMC/test.txt");
+
+            // Crear una instancia del lexer
             LexerParser lexer = new LexerParser(fileReader);
-            
-            // Create a Parser instance
+
+            // Crear una instancia del parser
             parser parser = new parser(lexer);
-            
-            // Parse the input
+
+            // Parsear la entrada y obtener la raíz del AST
             Symbol parseResult = parser.parse();
-            
-            // Optionally print the result (for debugging purposes)
-            System.out.println("Parsing completed.");
+            Program astRoot = (Program) parseResult.value;
+
+            // Imprimir el AST
+            System.out.println("Parsing completado.");
+            astRoot.print("");
+
         } catch (Exception e) {
             e.printStackTrace();
         }

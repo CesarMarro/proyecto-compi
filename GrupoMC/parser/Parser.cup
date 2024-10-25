@@ -1,57 +1,68 @@
-// JavaCUP specification file
-
-// Package declaration
 package parser;
 
-// **Terminal declarations**
+import java_cup.runtime.*;
+import ast.*;
+import java.util.ArrayList;
+
+parser code {:
+    public void syntax_error(Symbol s) {
+        System.out.println("Error de sintaxis en la línea " + (s.left + 1) + " columna " + s.right + ": " +
+                           "Se encontró \"" + s.value + "\"");
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        System.out.println("Error fatal de sintaxis en la línea " + (s.left + 1) + " columna " + s.right + ": " +
+                           "Se encontró \"" + s.value + "\"");
+    }
+:}
+
+// Terminal declarations (unchanged)
+// Terminal declarations with types
+terminal String ID;
+terminal int INT_LITERAL;
+terminal String CHAR_LITERAL;
+terminal String STRING_LITERAL;
+terminal int HEX_LITERAL; // Si utilizas hexadecimales como enteros
+terminal HEX_DIGIT;
+
 terminal CLASS, PROGRAM, VOID, INT, BOOLEAN, IF, ELSE, FOR, RETURN, BREAK, CONTINUE, CALLOUT, TRUE, FALSE;
 terminal ASSIGN, SUS_ASIGN, SUM_ASIGN, SUM, SUS, MULTIPLICATION, DIVIDE, MOD;
 terminal LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL, EQUAL, DIFFERENT, AND, OR;
 terminal OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET, OPEN_PARE, CLOSE_PARE;
 terminal NOT, SEMICOLON, COMMA, DOT;
-terminal CHAR_LITERAL, STRING_LITERAL, HEX_LITERAL, INT_LITERAL, HEX_DIGIT, ID, ERROR;
+terminal ERROR;
 
-// **Nonterminal declarations**
-nonterminal program;
-nonterminal decl_list;
-nonterminal declaration;
-nonterminal field_decl;
-nonterminal var_decl_list;
-nonterminal var_decl;
-nonterminal method_decl;
-nonterminal type;
-nonterminal param_list;
-nonterminal param_list_nonempty;
-nonterminal param;
-nonterminal block;
-nonterminal opt_var_decls;
-nonterminal var_decls;
-nonterminal var_decl_list_block;
-nonterminal var_decl_block;
-nonterminal var_decl_block_item;
-nonterminal opt_statements;
-nonterminal statements;
-nonterminal statement;
-nonterminal matched_stmt;
-nonterminal unmatched_stmt;
-nonterminal basic_stmt;
-nonterminal location;
-nonterminal expr;
-nonterminal assign_op;
-nonterminal method_call;
-nonterminal opt_callout_args;
-nonterminal callout_arg_list;
-nonterminal callout_arg;
-nonterminal bin_op;
-nonterminal arith_op;
-nonterminal rel_op;
-nonterminal eq_op;
-nonterminal cond_op;
-nonterminal literal;
-nonterminal int_literal;
-nonterminal char_literal;
-nonterminal bool_literal;
 
+// Nonterminal declarations with types
+nonterminal Program program;
+nonterminal ArrayList<Declaration> decl_list;
+nonterminal Declaration declaration;
+nonterminal FieldDecl field_decl;
+nonterminal ArrayList<VarDecl> var_decl_list;
+nonterminal VarDecl var_decl;
+nonterminal MethodDecl method_decl;
+nonterminal Type type;
+nonterminal ArrayList<Param> param_list, param_list_nonempty;
+nonterminal Param param;
+nonterminal Block block;
+nonterminal ArrayList<VarDecl> opt_var_decls, var_decls, var_decl_list_block;
+nonterminal ArrayList<VarDecl> var_decl_block; // Corregido a ArrayList<VarDecl>
+nonterminal VarDecl var_decl_block_item;
+nonterminal ArrayList<Statement> opt_statements, statements;
+nonterminal Statement statement, matched_stmt, unmatched_stmt, basic_stmt;
+nonterminal Location location;
+nonterminal Expression expr;
+nonterminal String assign_op;
+nonterminal MethodCall method_call;
+nonterminal ArrayList<Expression> opt_callout_args, callout_arg_list;
+nonterminal Expression callout_arg;
+nonterminal String bin_op, arith_op, rel_op, eq_op, cond_op;
+nonterminal Literal literal;
+nonterminal IntLiteral int_literal;
+nonterminal CharLiteral char_literal;
+nonterminal BooleanLiteral bool_literal;
+
+// Precedence and associativity declarations (unchanged)
 // **Precedence and associativity declarations**
 precedence left OR;
 precedence left AND;
@@ -60,132 +71,269 @@ precedence left LESS_THAN, MORE_THAN, LESS_THAN_OR_EQUAL, MORE_THAN_OR_EQUAL;
 precedence left SUM, SUS;
 precedence left MULTIPLICATION, DIVIDE, MOD;
 
-// **Start symbol declaration**
+// Start symbol declaration
 start with program;
 
-// **Production rules**
-program ::= CLASS PROGRAM OPEN_BRACE decl_list CLOSE_BRACE ;
+// Production rules
+program ::= CLASS PROGRAM OPEN_BRACE decl_list:dl CLOSE_BRACE
+            {: RESULT = new Program(dl); :}
+            ;
 
 decl_list ::= /* empty */
-            | decl_list declaration ;
+              {: RESULT = new ArrayList<Declaration>(); :}
+            | decl_list:dl declaration:d
+              {: dl.add(d); RESULT = dl; :}
+            ;
 
-declaration ::= field_decl
-              | method_decl ;
+declaration ::= field_decl:fd
+                {: RESULT = fd; :}
+              | method_decl:md
+                {: RESULT = md; :}
+              ;
 
-field_decl ::= type var_decl_list SEMICOLON ;
+field_decl ::= type:t var_decl_list:vdl SEMICOLON
+               {: RESULT = new FieldDecl(t, vdl); :}
+               ;
 
-var_decl_list ::= var_decl_list COMMA var_decl
-                | var_decl ;
+var_decl_list ::= var_decl_list:vdl COMMA var_decl:vd
+                  {: vdl.add(vd); RESULT = vdl; :}
+                | var_decl:vd
+                  {: ArrayList<VarDecl> vdl = new ArrayList<VarDecl>();
+                     vdl.add(vd);
+                     RESULT = vdl; :}
+                ;
 
-var_decl ::= ID
-           | ID ASSIGN expr ;
+var_decl ::= ID:id
+             {: RESULT = new VarDecl(id, null); :}
+           | ID:id ASSIGN expr:e
+             {: RESULT = new VarDecl(id, e); :}
+           ;
 
-method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block
-              | VOID ID OPEN_PARE param_list CLOSE_PARE block ;
+method_decl ::= type:t ID:id OPEN_PARE param_list:pl CLOSE_PARE block:b
+               {: RESULT = new MethodDecl(t, id, pl, b); :}
+             | VOID ID:id OPEN_PARE param_list:pl CLOSE_PARE block:b
+               {: RESULT = new MethodDecl(new TypeVoid(), id, pl, b); :}
+             ;
 
 param_list ::= /* empty */
-             | param_list_nonempty ;
+               {: RESULT = new ArrayList<Param>(); :}
+             | param_list_nonempty:pl
+               {: RESULT = pl; :}
+             ;
 
-param_list_nonempty ::= param_list_nonempty COMMA param
-                      | param ;
+param_list_nonempty ::= param_list_nonempty:pl COMMA param:p
+                        {: pl.add(p); RESULT = pl; :}
+                      | param:p
+                        {: ArrayList<Param> pl = new ArrayList<Param>();
+                           pl.add(p);
+                           RESULT = pl; :}
+                      ;
 
-param ::= type ID ;
+param ::= type:t ID:id
+          {: RESULT = new Param(t, id); :}
+        ;
 
 type ::= INT
-       | BOOLEAN ;
+         {: RESULT = new IntType(); :}
+       | BOOLEAN
+         {: RESULT = new BooleanType(); :}
+       ;
 
-block ::= OPEN_BRACE opt_var_decls opt_statements CLOSE_BRACE ;
+block ::= OPEN_BRACE opt_var_decls:ovd opt_statements:os CLOSE_BRACE
+          {: RESULT = new Block(ovd, os); :}
+        ;
 
 opt_var_decls ::= /* empty */
-                | var_decls ;
+                  {: RESULT = new ArrayList<VarDecl>(); :}
+                | var_decls:vd
+                  {: RESULT = vd; :}
+                ;
 
-var_decls ::= var_decls var_decl_block
-            | var_decl_block ;
+var_decls ::= var_decls:vds var_decl_block:vdb
+              {: vds.addAll(vdb); RESULT = vds; :}
+            | var_decl_block:vdb
+              {: RESULT = vdb; :}
+            ;
 
-var_decl_block ::= type var_decl_list_block SEMICOLON ;
+var_decl_block ::= type:t var_decl_list_block:vdlb SEMICOLON
+                   {: RESULT = new ArrayList<VarDecl>(vdlb); :}
+                 ;
 
-var_decl_list_block ::= var_decl_list_block COMMA var_decl_block_item
-                      | var_decl_block_item ;
+var_decl_list_block ::= var_decl_list_block:vdlb COMMA var_decl_block_item:vdbi
+                        {: vdlb.add(vdbi); RESULT = vdlb; :}
+                      | var_decl_block_item:vdbi
+                        {: ArrayList<VarDecl> vdlb = new ArrayList<VarDecl>();
+                           vdlb.add(vdbi);
+                           RESULT = vdlb; :}
+                      ;
 
-var_decl_block_item ::= ID
-                      | ID ASSIGN expr ;
+
+var_decl_block_item ::= ID:id
+                        {: RESULT = new VarDecl(id, null); :}
+                      | ID:id ASSIGN expr:e
+                        {: RESULT = new VarDecl(id, e); :}
+                      ;
 
 opt_statements ::= /* empty */
-                 | statements ;
+                   {: RESULT = new ArrayList<Statement>(); :}
+                 | statements:s
+                   {: RESULT = s; :}
+                 ;
 
-statements ::= statements statement
-             | statement ;
+statements ::= statements:ss statement:s
+               {: ss.add(s); RESULT = ss; :}
+             | statement:s
+               {: ArrayList<Statement> ss = new ArrayList<Statement>();
+                  ss.add(s);
+                  RESULT = ss; :}
+             ;
 
-statement ::= matched_stmt
-            | unmatched_stmt ;
+statement ::= matched_stmt:ms
+              {: RESULT = ms; :}
+            | unmatched_stmt:us
+              {: RESULT = us; :}
+            ;
 
-matched_stmt ::= basic_stmt
-               | IF OPEN_PARE expr CLOSE_PARE matched_stmt ELSE matched_stmt
-               | FOR OPEN_PARE ID ASSIGN expr SEMICOLON expr SEMICOLON expr CLOSE_PARE matched_stmt
-               | block ;
+matched_stmt ::= basic_stmt:bs
+                 {: RESULT = bs; :}
+               | IF OPEN_PARE expr:e CLOSE_PARE matched_stmt:ms1 ELSE matched_stmt:ms2
+                 {: RESULT = new IfStatement(e, ms1, ms2); :}
+               | FOR OPEN_PARE ID:id ASSIGN expr:e1 SEMICOLON expr:e2 SEMICOLON expr:e3 CLOSE_PARE matched_stmt:ms
+                 {: RESULT = new ForStatement(id, e1, e2, e3, ms); :}
+               | block:b
+                 {: RESULT = b; :}
+               ;
 
-unmatched_stmt ::= IF OPEN_PARE expr CLOSE_PARE statement
-                 | IF OPEN_PARE expr CLOSE_PARE matched_stmt ELSE unmatched_stmt ;
+unmatched_stmt ::= IF OPEN_PARE expr:e CLOSE_PARE statement:s
+                   {: RESULT = new IfStatement(e, s, null); :}
+                 | IF OPEN_PARE expr:e CLOSE_PARE matched_stmt:ms ELSE unmatched_stmt:us
+                   {: RESULT = new IfStatement(e, ms, us); :}
+                 ;
 
-basic_stmt ::= location assign_op expr SEMICOLON
-             | method_call SEMICOLON
-             | RETURN expr SEMICOLON
+basic_stmt ::= location:l assign_op:ao expr:e SEMICOLON
+               {: RESULT = new AssignStatement(l, ao, e); :}
+             | method_call:mc SEMICOLON
+               {: RESULT = new MethodCallStatement(mc); :}
+             | RETURN expr:e SEMICOLON
+               {: RESULT = new ReturnStatement(e); :}
              | BREAK SEMICOLON
-             | CONTINUE SEMICOLON ;
+               {: RESULT = new BreakStatement(); :}
+             | CONTINUE SEMICOLON
+               {: RESULT = new ContinueStatement(); :}
+             ;
 
-/* Remove if_statement and else_part productions, as they are replaced by matched_stmt and unmatched_stmt */
-
-location ::= ID
-           | ID OPEN_BRACKET expr CLOSE_BRACKET ;
+location ::= ID:id
+             {: RESULT = new VariableLocation(id); :}
+           | ID:id OPEN_BRACKET expr:e CLOSE_BRACKET
+             {: RESULT = new ArrayLocation(id, e); :}
+           ;
 
 assign_op ::= ASSIGN
+              {: RESULT = "="; :}
             | SUM_ASIGN
-            | SUS_ASIGN ;
+              {: RESULT = "+="; :}
+            | SUS_ASIGN
+              {: RESULT = "-="; :}
+            ;
 
-method_call ::= ID OPEN_PARE opt_callout_args CLOSE_PARE ;
+method_call ::= ID:id OPEN_PARE opt_callout_args:oca CLOSE_PARE
+                {: RESULT = new MethodCall(id, oca); :}
+              ;
 
 opt_callout_args ::= /* empty */
-                   | callout_arg_list ;
+                     {: RESULT = new ArrayList<Expression>(); :}
+                   | callout_arg_list:cal
+                     {: RESULT = cal; :}
+                   ;
 
-callout_arg_list ::= callout_arg_list COMMA callout_arg
-                   | callout_arg ;
+callout_arg_list ::= callout_arg_list:cal COMMA callout_arg:ca
+                     {: cal.add(ca); RESULT = cal; :}
+                   | callout_arg:ca
+                     {: ArrayList<Expression> cal = new ArrayList<Expression>();
+                        cal.add(ca);
+                        RESULT = cal; :}
+                   ;
 
-callout_arg ::= expr
-              | STRING_LITERAL ;
+callout_arg ::= expr:e
+                {: RESULT = e; :}
+              | STRING_LITERAL:sl
+                {: RESULT = new StringLiteral(sl); :}
+              ;
 
-expr ::= location
-       | method_call
-       | literal
-       | OPEN_PARE expr CLOSE_PARE
-       | expr bin_op expr ;
+expr ::= location:l
+         {: RESULT = l; :}
+       | method_call:mc
+         {: RESULT = mc; :}
+       | literal:l
+         {: RESULT = l; :}
+       | OPEN_PARE expr:e CLOSE_PARE
+         {: RESULT = e; :}
+       | expr:e1 bin_op:bo expr:e2
+         {: RESULT = new BinaryOpExpression(e1, bo, e2); :}
+       ;
 
-bin_op ::= arith_op
-         | rel_op
-         | eq_op
-         | cond_op ;
+bin_op ::= arith_op:ao
+           {: RESULT = ao; :}
+         | rel_op:ro
+           {: RESULT = ro; :}
+         | eq_op:eo
+           {: RESULT = eo; :}
+         | cond_op:co
+           {: RESULT = co; :}
+         ;
 
 arith_op ::= SUM
+             {: RESULT = "+"; :}
            | SUS
+             {: RESULT = "-"; :}
            | MULTIPLICATION
+             {: RESULT = "*"; :}
            | DIVIDE
-           | MOD ;
+             {: RESULT = "/"; :}
+           | MOD
+             {: RESULT = "%"; :}
+           ;
 
 rel_op ::= LESS_THAN
+           {: RESULT = "<"; :}
          | MORE_THAN
+           {: RESULT = ">"; :}
          | LESS_THAN_OR_EQUAL
-         | MORE_THAN_OR_EQUAL ;
+           {: RESULT = "<="; :}
+         | MORE_THAN_OR_EQUAL
+           {: RESULT = ">="; :}
+         ;
 
 eq_op ::= EQUAL
-        | DIFFERENT ;
+          {: RESULT = "=="; :}
+        | DIFFERENT
+          {: RESULT = "!="; :}
+        ;
 
 cond_op ::= AND
-          | OR ;
+            {: RESULT = "&&"; :}
+          | OR
+            {: RESULT = "||"; :}
+          ;
 
-literal ::= int_literal
-          | char_literal
-          | bool_literal ;
+literal ::= int_literal:il
+            {: RESULT = il; :}
+          | char_literal:cl
+            {: RESULT = cl; :}
+          | bool_literal:bl
+            {: RESULT = bl; :}
+          ;
 
-int_literal ::= INT_LITERAL ;
-char_literal ::= CHAR_LITERAL ;
+int_literal ::= INT_LITERAL:il
+              {: RESULT = new IntLiteral(il); :}
+              ;
+
+char_literal ::= CHAR_LITERAL:cl
+                 {: RESULT = new CharLiteral(cl.charAt(1)); :}
+               ;
+
 bool_literal ::= TRUE
-               | FALSE ;
+                 {: RESULT = new BooleanLiteral(true); :}
+               | FALSE
+                 {: RESULT = new BooleanLiteral(false); :}
+               ;
