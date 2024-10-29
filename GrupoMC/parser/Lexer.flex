@@ -103,9 +103,11 @@ espacio=[ \t\r\n]+
 
 {char_literal} { return new Symbol(sym.CHAR_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
 {string_literal} { return new Symbol(sym.STRING_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
-{hex_literal} { return new Symbol(sym.HEX_LITERAL, yyline + 1, yycolumn + 1, yytext()); }
-{hex_digit} { return new Symbol(sym.HEX_DIGIT, yyline + 1, yycolumn + 1, yytext()); }
-{int_literal} { return new Symbol(sym.INT_LITERAL, yyline + 1, yycolumn + 1, Integer.parseInt(yytext())); }
+
+{int_literal} { 
+    System.out.println("Token INT_LITERAL detectado: " + yytext()); 
+    return new Symbol(sym.INT_LITERAL, yyline + 1, yycolumn + 1, Integer.parseInt(yytext())); 
+}
 
 
 {id} { return new Symbol(sym.ID, yyline + 1, yycolumn + 1, yytext()); }
