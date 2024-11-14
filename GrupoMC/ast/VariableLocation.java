@@ -16,4 +16,9 @@ public class VariableLocation extends Location {
         printIndent(indent);
         System.out.println("VariableLocation: " + id);
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }
