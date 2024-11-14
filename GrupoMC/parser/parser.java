@@ -8,13 +8,37 @@ package parser;
 import java_cup.runtime.*;
 import ast.*;
 import java.util.ArrayList;
-import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
 @SuppressWarnings({"rawtypes"})
 public class parser extends java_cup.runtime.lr_parser {
 
+  // Initialize Symbol Table and Error Reporter
+    SymbolTable symbolTable = new SymbolTable();
+    SemanticErrorReporter errorReporter = new SemanticErrorReporter();
+
+    // Scope management methods
+    public void enterScope() {
+        symbolTable.enterScope();
+    }
+
+    public void exitScope() {
+        symbolTable.exitScope();
+    }
+    public void reportSemanticError(String message) {
+      errorReporter.reportError(message);
+  }
+
+  // Method to check and print errors after parsing
+  public void printErrors() {
+      if (errorReporter.hasErrors()) {
+          errorReporter.printErrors();
+      } else {
+          System.out.println("No semantic errors found.");
+      }
+  }
+  
  public final Class getSymbolContainer() {
     return sym.class;
 }
@@ -399,25 +423,25 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
     public void syntax_error(Symbol s) {
-        System.out.println("Error de sintaxis en la línea " + (s.left + 1) + " columna " + s.right + ": " +
-                           "Se encontró \"" + s.value + "\"");
+        System.out.println("Error de sintaxis en la linea " + (s.left + 1) + " columna " + s.right + ": " +
+                           "Se encontro \"" + s.value + "\"");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        System.out.println("Error fatal de sintaxis en la línea " + (s.left + 1) + " columna " + s.right + ": " +
-                           "Se encontró \"" + s.value + "\"");
+        System.out.println("Error fatal de sintaxis en la linea " + (s.left + 1) + " columna " + s.right + ": " +
+                           "Se encontro \"" + s.value + "\"");
     }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
-class CUP$parser$actions {
-  private final parser parser;
+    class CUP$parser$actions {
+        private final parser parser;
 
-  /** Constructor */
-  CUP$parser$actions(parser parser) {
-    this.parser = parser;
-  }
+        /** Constructor */
+        CUP$parser$actions(parser parser) {
+            this.parser = parser;
+        }
 
   /** Method 0 with the actual generated action code for actions 0 to 300. */
   public final java_cup.runtime.Symbol CUP$parser$do_action_part00000000(
@@ -558,10 +582,15 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new VarDecl(id, null); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+    if (!parser.symbolTable.insert(id, "int")) { // assuming "int" as the type for example
+                parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
             }
-          return CUP$parser$result;
+            RESULT = new VarDecl(id, null);
+            CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl", 5, 
+                ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), 
+                ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+        }
+        return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 10: // var_decl ::= ID ASSIGN expr 
@@ -1011,19 +1040,25 @@ class CUP$parser$actions {
           case 42: // basic_stmt ::= location assign_op expr SEMICOLON 
             {
               Statement RESULT =null;
-		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
-		Location l = (Location)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int aoleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int aoright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		String ao = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = new AssignStatement(l, ao, e); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("basic_stmt",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+              int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).left;
+              int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).right;
+              Location l = (Location) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value;
+              int aoleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
+              int aoright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
+              String ao = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
+              int eleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
+              int eright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
+              Expression e = (Expression) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
+    String varName = l.toString(); // Assuming Location has a meaningful toString
+    if (parser.symbolTable.lookup(varName) == null) {
+      parser.reportSemanticError("Semantic Error: Variable '" + varName + "' is undeclared.");
+  }
+  RESULT = new AssignStatement(l, ao, e);
+  CUP$parser$result = parser.getSymbolFactory().newSymbol("basic_stmt", 22,
+          ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)),
+          ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 43: // basic_stmt ::= method_call SEMICOLON 

@@ -1,6 +1,18 @@
-int main() {
-    int x = 10;
-    if (x > 5) {
-        print("x is greater than 5");
+class Program {
+    //hola que tal 
+    /* Este es un comentario 
+   de bloque que puede tener
+   varias líneas */
+    boolean entrada;
+    int numeros;
+
+
+    void main(){
+        int resultado1, resultado2;
+        boolean resultado3;
+        entrada = true;
+
+
+        
     }
 }
