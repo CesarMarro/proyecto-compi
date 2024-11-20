@@ -8,6 +8,9 @@ package parser;
 import java_cup.runtime.*;
 import ast.*;
 import java.util.ArrayList;
+import irt.*;
+import java.util.Pair;
+
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -472,16 +475,18 @@ public class parser extends java_cup.runtime.lr_parser {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // program ::= CLASS PROGRAM OPEN_BRACE decl_list CLOSE_BRACE 
-            {
-              Program RESULT =null;
-		int dlleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int dlright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		ArrayList<Declaration> dl = (ArrayList<Declaration>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = new Program(dl); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+          case 1: // program ::= CLASS PROGRAM OPEN_BRACE decl_list CLOSE_BRACE
+{
+    Program RESULT = null;
+    IRTProgram IRT_RESULT = null;
+    int dlleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
+    int dlright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
+    Pair<ArrayList<Declaration>, ArrayList<IRTDecl>> dl = (Pair<ArrayList<Declaration>, ArrayList<IRTDecl>>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
+    RESULT = new Program(dl.getFirst());
+    IRT_RESULT = new IRTProgram(dl.getSecond());
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("program", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), new Pair<>(RESULT, IRT_RESULT));
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 2: // decl_list ::= 
@@ -532,19 +537,21 @@ public class parser extends java_cup.runtime.lr_parser {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // field_decl ::= type var_decl_list SEMICOLON 
-            {
-              FieldDecl RESULT =null;
-		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Type t = (Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int vdlleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int vdlright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		ArrayList<VarDecl> vdl = (ArrayList<VarDecl>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = new FieldDecl(t, vdl); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("field_decl",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+          case 6: // field_decl ::= type var_decl_list SEMICOLON
+{
+    FieldDecl RESULT = null;
+    IRTFieldDecl IRT_RESULT = null;
+    int tleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
+    int tright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
+    Type t = (Type) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
+    int vdlleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
+    int vdlright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
+    Pair<ArrayList<VarDecl>, ArrayList<IRTVarDecl>> vdl = (Pair<ArrayList<VarDecl>, ArrayList<IRTVarDecl>>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
+    RESULT = new FieldDecl(t, vdl.getFirst());
+    IRT_RESULT = new IRTFieldDecl(t, vdl.getSecond());
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("field_decl", 3, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), new Pair<>(RESULT, IRT_RESULT));
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 7: // var_decl_list ::= var_decl_list COMMA var_decl 
