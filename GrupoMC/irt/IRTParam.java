@@ -1,26 +1,21 @@
 package irt;
 
-import ast.Type;
-
 public class IRTParam extends IRTNode {
-    private Type type;
-    private String id;
+    private String name;
+    private String type;
 
-    public IRTParam(Type type, String id) {
+    public IRTParam(String name, String type) {
+        this.name = name;
         this.type = type;
-        this.id = id;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String getId() {
-        return id;
     }
 
     @Override
-    public void generateCode(CodeGenerator gen) {
-        // No code generation needed for parameters
+    public String toDot() {
+        return "\"" + hashCode() + "\" [label=\"Param: " + name + " (" + type + ")\"];\n";
+    }
+
+    @Override
+    public String toStringIndented(String indent) {
+        return indent + "Param: " + name + " (" + type + ")\n";
     }
 }

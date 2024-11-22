@@ -1,19 +1,21 @@
 package irt;
 
-import ast.Type;
-import java.util.ArrayList;
+public class IRTFieldDecl extends IRTNode {
+    private String name;
+    private String type;
 
-public class IRTFieldDecl extends IRTDecl {
-    private Type type;
-    private ArrayList<IRTVarDecl> varDecls;
-
-    public IRTFieldDecl(Type type, ArrayList<IRTVarDecl> varDecls) {
+    public IRTFieldDecl(String name, String type) {
+        this.name = name;
         this.type = type;
-        this.varDecls = varDecls;
     }
 
     @Override
-    public void generateCode(CodeGenerator gen) {
-        // Generate code for field declarations
+    public String toDot() {
+        return "\"" + hashCode() + "\" [label=\"Field: " + name + " (" + type + ")\"];\n";
+    }
+
+    @Override
+    public String toStringIndented(String indent) {
+        return indent + "FieldDecl: " + name + " (" + type + ")\n";
     }
 }

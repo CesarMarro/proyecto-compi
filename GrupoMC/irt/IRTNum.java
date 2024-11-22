@@ -1,16 +1,19 @@
 package irt;
 
-public class IRTNum extends IRTExpr {
-    public double value;
+public class IRTNum extends IRTNode {
+    private int value;
 
-    public IRTNum(double value) {
+    public IRTNum(int value) {
         this.value = value;
     }
 
     @Override
-    public void generateCode(CodeGenerator gen) {
-        String temp = gen.newTemp();
-        gen.emit(temp + " = " + value);
-        gen.setLastTemp(temp);
+    public String toDot() {
+        return "\"" + hashCode() + "\" [label=\"" + value + "\"];\n";
+    }
+
+    @Override
+    public String toStringIndented(String indent) {
+        return indent + "Num: " + value + "\n";
     }
 }

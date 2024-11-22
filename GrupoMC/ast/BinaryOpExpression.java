@@ -34,4 +34,9 @@ public class BinaryOpExpression extends Expression {
         System.out.println("Right:");
         right.print(indent + "    ");
     }
+
+    public String getOp() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOp'");
+    }
 }
