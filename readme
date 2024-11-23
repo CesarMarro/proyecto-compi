@@ -1,0 +1,6 @@
+
+correr desde proyecto-compi:
+javac -d bin -cp lib/java-cup-11b.jar GrupoMC/parser/*.java GrupoMC/ast/*.java
+
+correr desde GrupoMC:
+java -cp ".;C:\Users\Chechamilo\Documents\Github\proyecto-compi\bin;C:\Users\Chechamilo\Documents\Github\proyecto-compi\lib\java-cup-11b.jar" parser.test

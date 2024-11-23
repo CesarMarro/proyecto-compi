@@ -4,5 +4,7 @@ PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar Grupo
 PS C:\Users\Checha\Escritorio\GitHub\compi> javac -cp lib/java-cup-11b.jar GrupoMC/parser/parser.java GrupoMC/parser/LexerParser.java GrupoMC/parser/sym.java GrupoMc/parser/test.java 
 PS C:\Users\Checha\Escritorio\GitHub\compi\GrupoMC> java -cp ".;C:\Users\Checha\Escritorio\GitHub\compi\lib\java-cup-11b.jar" parser.test
 PS C:\Users\Checha\Escritorio\GitHub\compi\GrupoMC> java -cp ".;C:\Users\Chechamilo\Documents\Github\proyecto-compi\lib\java-cup-11b.jar" parser.test
+java -cp ".;C:\Users\Chechamilo\Documents\Github\proyecto-compi\bin;C:\Users\Chechamilo\Documents\Github\proyecto-compi\lib\java-cup-11b.jar" parser.test
+
 
 PS C:\Users\Chechamilo\Documents\Github\proyecto-compi> javac -cp lib/java-cup-11b.jar GrupoMC/parser/*.java GrupoMC/ast/*.java
