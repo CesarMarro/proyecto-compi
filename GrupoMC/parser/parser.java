@@ -613,6 +613,8 @@ public class parser extends java_cup.runtime.lr_parser {
           case 11: // method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block 
             {
               MethodDecl RESULT =null;
+              parser.enterScope();
+              
 		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).right;
 		Type t = (Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value;
@@ -622,12 +624,19 @@ public class parser extends java_cup.runtime.lr_parser {
 		int plleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int plright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ArrayList<Param> pl = (ArrayList<Param>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+    for (Param param : pl) {
+      String paramName = param.getId();
+      if (!parser.symbolTable.insert(paramName, "parameter")) {
+          parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
+      }
+  }
 		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Block b = (Block)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new MethodDecl(t, id, pl, b); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("method_decl",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
+    parser.exitScope();
+    RESULT = new MethodDecl(t, id, pl, b);
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("method_decl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+}
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
@@ -735,6 +744,7 @@ public class parser extends java_cup.runtime.lr_parser {
           case 20: // block ::= OPEN_BRACE opt_var_decls opt_statements CLOSE_BRACE 
             {
               Block RESULT =null;
+              parser.enterScope();
 		int ovdleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int ovdright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ArrayList<VarDecl> ovd = (ArrayList<VarDecl>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
@@ -742,8 +752,9 @@ public class parser extends java_cup.runtime.lr_parser {
 		int osright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<Statement> os = (ArrayList<Statement>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 RESULT = new Block(ovd, os); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("block",11, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
+     parser.exitScope();
+     CUP$parser$result = parser.getSymbolFactory().newSymbol("block", 11, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+ }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
@@ -839,31 +850,39 @@ public class parser extends java_cup.runtime.lr_parser {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // var_decl_block_item ::= ID 
-            {
-              VarDecl RESULT =null;
-		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new VarDecl(id, null); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item",16, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+          case 28: // var_decl_block_item ::= ID
+{
+    VarDecl RESULT = null;
+    int idleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    int idright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
+    String id = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+    // Insert variable into the symbol table
+    if (!parser.symbolTable.insert(id, "variable")) {
+        parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
+    }
+    RESULT = new VarDecl(id, null);
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // var_decl_block_item ::= ID ASSIGN expr 
-            {
-              VarDecl RESULT =null;
-		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new VarDecl(id, e); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+          case 29: // var_decl_block_item ::= ID ASSIGN expr
+{
+    VarDecl RESULT = null;
+    int idleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
+    int idright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
+    String id = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
+    int eleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    int eright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
+    Expression e = (Expression) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+    // Insert variable into the symbol table
+    if (!parser.symbolTable.insert(id, "variable")) {
+        parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
+    }
+    RESULT = new VarDecl(id, e);
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 30: // opt_statements ::= 
