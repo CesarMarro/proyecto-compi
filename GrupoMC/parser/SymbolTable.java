@@ -1,6 +1,9 @@
 package parser;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 class SymbolTable {
@@ -8,8 +11,26 @@ class SymbolTable {
 
     public SymbolTable() {
         scopes = new Stack<>();
+        scopes.push(new HashMap<>());
+
+        declaredMethods = new HashSet<>();
         enterScope(); // Start with a global scope
     }
+
+    private Set<String> declaredMethods = new HashSet<>();
+
+public boolean insertMethod(String id) {
+        if (declaredMethods.contains(id)) {
+            return false; // Method already declared
+        } else {
+            declaredMethods.add(id);
+            return true;
+        }
+    }
+
+public boolean isMethodDeclared(String id) {
+    return declaredMethods.contains(id);
+}
 
     // Represents a symbol in the symbol table
     public static class Symbol {
@@ -44,13 +65,14 @@ class SymbolTable {
     }
 
     // Lookup a symbol in the scopes, starting from the innermost scope
-    public Symbol lookup(String name) {
-        for (int i = scopes.size() - 1; i >= 0; i--) {
-            if (scopes.get(i).containsKey(name)) {
-                return scopes.get(i).get(name);
-            }
+   public boolean lookup(String id) {
+    for (int i = scopes.size() - 1; i >= 0; i--) {
+        Map<String, Symbol> scope = scopes.get(i);
+        if (scope.containsKey(id)) {
+            return true; // Found the identifier in one of the scopes
         }
-        return null; // Symbol not found
     }
+    return false; // Not found in any scope
+}
 }
 

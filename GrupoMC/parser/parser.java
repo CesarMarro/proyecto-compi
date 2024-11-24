@@ -8,7 +8,7 @@ package parser;
 import java_cup.runtime.*;
 import ast.*;
 import java.util.ArrayList;
-import irt.*;
+
 
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -610,34 +610,49 @@ public class parser extends java_cup.runtime.lr_parser {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 11: // method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block 
-            {
-              MethodDecl RESULT =null;
-              parser.enterScope();
-              
-		int tleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).left;
-		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).right;
-		Type t = (Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value;
-		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
-		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		int plleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int plright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		ArrayList<Param> pl = (ArrayList<Param>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+          case 11: // method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block
+{
+    MethodDecl RESULT = null;
+    parser.enterScope();
+    int tleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).left;
+    int tright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).right;
+    Type t = (Type) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value;
+    int idleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).left;
+    int idright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).right;
+    String id = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).value;
+    int plleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
+    int plright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
+    ArrayList<Param> pl = (ArrayList<Param>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
+    int bleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    int bright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
+    
+    // Insert the method into the symbol table (if you're tracking methods)
+    if (!parser.symbolTable.insertMethod(id)) {
+        parser.reportSemanticError("Semantic Error: Method '" + id + "' is already declared.");
+    }
+
+    // Enter method scope
+    
+
+    // Insert parameters into the symbol table
     for (Param param : pl) {
       String paramName = param.getId();
       if (!parser.symbolTable.insert(paramName, "parameter")) {
           parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
       }
-  }
-		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Block b = (Block)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-    parser.exitScope();
+    }
+    Block b = (Block) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+
+
+    // Build the method declaration
     RESULT = new MethodDecl(t, id, pl, b);
+
+    // Exit the method scope
+    parser.exitScope();
+
     CUP$parser$result = parser.getSymbolFactory().newSymbol("method_decl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
-          return CUP$parser$result;
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 12: // method_decl ::= VOID ID OPEN_PARE param_list CLOSE_PARE block 
@@ -1058,26 +1073,36 @@ return CUP$parser$result;
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 42: // basic_stmt ::= location assign_op expr SEMICOLON 
-            {
-              Statement RESULT =null;
-              int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).left;
-              int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).right;
-              Location l = (Location) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value;
-              int aoleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
-              int aoright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
-              String ao = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
-              int eleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
-              int eright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
-              Expression e = (Expression) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
-    String varName = l.toString(); // Assuming Location has a meaningful toString
-    if (parser.symbolTable.lookup(varName) == null) {
-      parser.reportSemanticError("Semantic Error: Variable '" + varName + "' is undeclared.");
-  }
-  RESULT = new AssignStatement(l, ao, e);
-  CUP$parser$result = parser.getSymbolFactory().newSymbol("basic_stmt", 22,
-          ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)),
-          ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+          case 42: // basic_stmt ::= location assign_op expr SEMICOLON
+{
+    Statement RESULT = null;
+    int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).left;
+    int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).right;
+    Location l = (Location) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value;
+    int aoleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
+    int aoright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
+    String ao = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
+    int eleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
+    int eright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
+    Expression e = (Expression) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
+
+    // Get the variable name from the Location object
+    String varName = null;
+    if (l instanceof VariableLocation) {
+        varName = ((VariableLocation) l).getId();
+    } else if (l instanceof ArrayLocation) {
+        varName = ((ArrayLocation) l).getId();
+    } // Use appropriate method
+
+    // Check if the variable is declared
+    if (!parser.symbolTable.lookup(varName)) {
+        parser.reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
+    }
+
+    RESULT = new AssignStatement(l, ao, e);
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("basic_stmt", 22,
+        ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)),
+        ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
 return CUP$parser$result;
 
@@ -1187,6 +1212,9 @@ return CUP$parser$result;
 		int ocaleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int ocaright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<Expression> oca = (ArrayList<Expression>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+    if (!parser.symbolTable.isMethodDeclared(id)) {
+      parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Method '" + id + "' is undeclared.");
+  }
 		 RESULT = new MethodCall(id, oca); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("method_call",26, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1267,16 +1295,30 @@ return CUP$parser$result;
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 59: // expr ::= location 
-            {
-              Expression RESULT =null;
-		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Location l = (Location)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = l; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("expr",24, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
+          case 59: // expr ::= location
+{
+    Expression RESULT = null;
+    int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
+    Location l = (Location) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+
+    // Get the variable name from the Location object
+    String varName = null;
+    if (l instanceof VariableLocation) {
+        varName = ((VariableLocation) l).getId();
+    } else if (l instanceof ArrayLocation) {
+        varName = ((ArrayLocation) l).getId();
+    } // Use appropriate method
+
+    // Check if the variable is declared
+    if (!parser.symbolTable.lookup(varName)) {
+        parser.reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
+    }
+
+    RESULT = l;
+    CUP$parser$result = parser.getSymbolFactory().newSymbol("expr", 24, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
+}
+return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 60: // expr ::= method_call 
