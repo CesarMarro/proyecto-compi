@@ -2,19 +2,22 @@ package parser;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import ast.Type;
+
 class SymbolTable {
     private Stack<HashMap<String, Symbol>> scopes;
+    private Scope currentScope;
+
+    
 
     public SymbolTable() {
-        scopes = new Stack<>();
-        scopes.push(new HashMap<>());
-
-        declaredMethods = new HashSet<>();
-        enterScope(); // Start with a global scope
+        currentScope = new Scope(null); // Start with a global scope
+        declaredMethods = new HashSet<>();// Start with a global scope
     }
 
     private Set<String> declaredMethods = new HashSet<>();
@@ -31,6 +34,10 @@ public boolean insertMethod(String id) {
 public boolean isMethodDeclared(String id) {
     return declaredMethods.contains(id);
 }
+public void enterScope() {
+    Scope newScope = new Scope(currentScope);
+    currentScope = newScope;
+}
 
     // Represents a symbol in the symbol table
     public static class Symbol {
@@ -43,36 +50,32 @@ public boolean isMethodDeclared(String id) {
         }
     }
 
-    // Enter a new scope
-    public void enterScope() {
-        scopes.push(new HashMap<>());
-    }
+
 
     // Exit the current scope
     public void exitScope() {
-        if (!scopes.isEmpty()) {
-            scopes.pop();
-        }
+        currentScope = currentScope.getParent();
     }
 
     // Insert a symbol in the current scope
-    public boolean insert(String name, String type) {
-        if (scopes.peek().containsKey(name)) {
-            return false; // Symbol already exists in this scope
-        }
-        scopes.peek().put(name, new Symbol(type));
-        return true;
+    public boolean insert(String name, String paramType) {
+        return currentScope.insert(name, paramType);
     }
 
     // Lookup a symbol in the scopes, starting from the innermost scope
    public boolean lookup(String id) {
-    for (int i = scopes.size() - 1; i >= 0; i--) {
-        Map<String, Symbol> scope = scopes.get(i);
-        if (scope.containsKey(id)) {
-            return true; // Found the identifier in one of the scopes
+    return currentScope.lookup(id);  
+    }
+public void insertParameters(List<ParameterNode> parameters) {
+    for (ParameterNode param : parameters) {
+        boolean success = insert(param.getName(), param.getType());
+        if (!success) {
+            // Handle duplicate parameter names
+            System.err.println("Semantic Error at line " + param.getLine() + ": Parameter '" + param.getName() + "' is already declared.");
         }
     }
-    return false; // Not found in any scope
 }
 }
+
+
 

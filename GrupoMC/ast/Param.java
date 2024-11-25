@@ -7,7 +7,9 @@ public class Param extends ASTNode {
     public Param(Type type, String id) {
         this.type = type;
         this.id = id;
+        
     }
+    
 
     public Type getType() {
         return type;
@@ -22,5 +24,9 @@ public class Param extends ASTNode {
         printIndent(indent);
         System.out.println("Param: " + id);
         type.print(indent + "  ");
+    }
+
+    public int getLine() {
+        return 0;
     }
 }

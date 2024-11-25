@@ -15,6 +15,8 @@ import java.util.ArrayList;
   */
 @SuppressWarnings({"rawtypes"})
 public class parser extends java_cup.runtime.lr_parser {
+  private boolean isParsingMethodBody = false;
+  private ArrayList<Param> currentMethodParams = null;
 
   // Initialize Symbol Table and Error Reporter
     SymbolTable symbolTable = new SymbolTable();
@@ -543,6 +545,12 @@ public class parser extends java_cup.runtime.lr_parser {
                 int vdlleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
                 int vdlright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
                 ArrayList<VarDecl> vdl = (ArrayList<VarDecl>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
+                for (VarDecl varDecl : vdl) {
+                  String varName = varDecl.getId();
+                  if (!parser.symbolTable.insert(varName, t.toString())) {
+                      parser.reportSemanticError("Semantic Error at line " + (tleft + 1) + ": Variable '" + varName + "' is already declared in the current scope.");
+                  }
+              }
                 RESULT = new FieldDecl(t, vdl);
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("field_decl", 3, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
             }
@@ -584,9 +592,6 @@ public class parser extends java_cup.runtime.lr_parser {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-    if (!parser.symbolTable.insert(id, "int")) { // assuming "int" as the type for example
-                parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
-            }
             RESULT = new VarDecl(id, null);
             CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl", 5, 
                 ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), 
@@ -613,7 +618,6 @@ public class parser extends java_cup.runtime.lr_parser {
           case 11: // method_decl ::= type ID OPEN_PARE param_list CLOSE_PARE block
 {
     MethodDecl RESULT = null;
-    parser.enterScope();
     int tleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).left;
     int tright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).right;
     Type t = (Type) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value;
@@ -623,37 +627,39 @@ public class parser extends java_cup.runtime.lr_parser {
     int plleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).left;
     int plright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).right;
     ArrayList<Param> pl = (ArrayList<Param>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)).value;
-    int bleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
-    int bright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
-    
-    // Insert the method into the symbol table (if you're tracking methods)
+    // int bleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    // int bright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
     if (!parser.symbolTable.insertMethod(id)) {
-        parser.reportSemanticError("Semantic Error: Method '" + id + "' is already declared.");
-    }
-
-    // Enter method scope
-    
-
-    // Insert parameters into the symbol table
-    for (Param param : pl) {
-      String paramName = param.getId();
-      if (!parser.symbolTable.insert(paramName, "parameter")) {
-          parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
-      }
-    }
+      parser.reportSemanticError("Semantic Error: Method '" + id + "' is already declared.");
+  }
+  
+  // Enter the method's scope
+  // enterScope();
+  //   // Insert parameters into the symbol table
+  //   for (Param param : pl) {
+  //     String paramName = param.getId();
+  //     Type paramType = param.getType();
+  //     if (!symbolTable.insert(paramName, "parameter")) {
+  //         reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
+  //     }
+  //   }
+    // Set flags for block processing
+    parser.isParsingMethodBody = true;
+    parser.currentMethodParams = pl;
     Block b = (Block) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+
+    parser.isParsingMethodBody = false;
+    parser.currentMethodParams = null;
 
 
     // Build the method declaration
+    // int bleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
+    // int bright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
     RESULT = new MethodDecl(t, id, pl, b);
-
-    // Exit the method scope
-    parser.exitScope();
 
     CUP$parser$result = parser.getSymbolFactory().newSymbol("method_decl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
 return CUP$parser$result;
-
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 12: // method_decl ::= VOID ID OPEN_PARE param_list CLOSE_PARE block 
             {
@@ -688,6 +694,8 @@ return CUP$parser$result;
 		int plleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int plright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Param> pl = (ArrayList<Param>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+    System.out.println("param_list has " + pl.size() + " parameters.");
+
 		 RESULT = pl; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("param_list",8, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -703,7 +711,9 @@ return CUP$parser$result;
 		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Param p = (Param)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 pl.add(p); RESULT = pl; 
+		 pl.add(p); 
+     RESULT = pl; 
+     System.out.println("Adding parameter to list: " + p.getId());
               CUP$parser$result = parser.getSymbolFactory().newSymbol("param_list_nonempty",9, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -715,7 +725,9 @@ return CUP$parser$result;
 		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Param p = (Param)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+    System.out.println("Adding parameter to list: " + p.getId());
 		 ArrayList<Param> pl = new ArrayList<Param>();
+     System.out.println("Current param_list_nonempty size: " + pl.size());
                            pl.add(p);
                            RESULT = pl; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("param_list_nonempty",9, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -732,6 +744,7 @@ return CUP$parser$result;
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+    System.out.println("Parsed parameter: " + id + ", Type: " + t);
 		 RESULT = new Param(t, id); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("param",10, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -760,6 +773,19 @@ return CUP$parser$result;
             {
               Block RESULT =null;
               parser.enterScope();
+
+              // Insert method parameters into the current scope if parsing method body
+    if (parser.isParsingMethodBody && parser.currentMethodParams != null) {
+      System.out.println("In block: currentMethodParams has " + parser.currentMethodParams.size() + " parameters.");
+      for (Param param : parser.currentMethodParams) {
+          String paramName = param.getId();
+          Type paramType = param.getType();
+          System.out.println("Inserting parameter: " + paramName + ", Type: " + paramType);
+          if (!parser.symbolTable.insert(paramName, paramType.toString())) {
+              parser.reportSemanticError("Semantic Error at line " + (param.getLine() + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
+          }
+      }
+  }
 		int ovdleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int ovdright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ArrayList<VarDecl> ovd = (ArrayList<VarDecl>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
@@ -830,7 +856,13 @@ return CUP$parser$result;
 		int vdlbleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int vdlbright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<VarDecl> vdlb = (ArrayList<VarDecl>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = new ArrayList<VarDecl>(vdlb); 
+		for (VarDecl varDecl : vdlb) {
+      String varName = varDecl.getId();
+      if (!parser.symbolTable.insert(varName, t.toString())) {
+          parser.reportSemanticError("Semantic Error at line " + (tleft + 1) + ": Variable '" + varName + "' is already declared in the current scope.");
+      }
+  } 
+    RESULT = new ArrayList<VarDecl>(vdlb); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -872,9 +904,7 @@ return CUP$parser$result;
     int idright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
     String id = (String) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
     // Insert variable into the symbol table
-    if (!parser.symbolTable.insert(id, "variable")) {
-        parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
-    }
+
     RESULT = new VarDecl(id, null);
     CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
@@ -1095,8 +1125,8 @@ return CUP$parser$result;
     } // Use appropriate method
 
     // Check if the variable is declared
-    if (!parser.symbolTable.lookup(varName)) {
-        parser.reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
+    if (!symbolTable.lookup(varName)) {
+        reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
     }
 
     RESULT = new AssignStatement(l, ao, e);
@@ -1311,8 +1341,8 @@ return CUP$parser$result;
     } // Use appropriate method
 
     // Check if the variable is declared
-    if (!parser.symbolTable.lookup(varName)) {
-        parser.reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
+    if (!symbolTable.lookup(varName)) {
+        reportSemanticError("Semantic Error at line " + (lleft + 1) + ": Variable '" + varName + "' is undeclared.");
     }
 
     RESULT = l;

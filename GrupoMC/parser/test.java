@@ -9,7 +9,7 @@ public class test {
         try {
             // Ruta al archivo de prueba
             // Asegúrate de que esta ruta apunta al archivo de prueba que deseas analizar
-            FileReader fileReader = new FileReader("C:\\Users\\Javier C\\OneDrive - Universidad Francisco Marroquin\\Clases\\Compiladores\\proyecto-compi\\GrupoMC\\texto.txt");
+            FileReader fileReader = new FileReader("C:\\Users\\Javier C\\OneDrive - Universidad Francisco Marroquin\\Clases\\Sistemas operativos\\Proyecto-Compi\\proyecto-compi\\GrupoMC\\texto.txt");
 
             // Crear una instancia del lexer
             LexerParser lexer = new LexerParser(fileReader);

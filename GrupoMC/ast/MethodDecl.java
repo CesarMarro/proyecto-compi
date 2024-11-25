@@ -1,6 +1,8 @@
 package ast;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MethodDecl extends Declaration {
     private Type returnType;
@@ -47,4 +49,6 @@ public class MethodDecl extends Declaration {
         System.out.println("Block:");
         block.print(indent + "    ");
     }
+private HashMap<String, Method> methods = new HashMap<>();
+
 }
