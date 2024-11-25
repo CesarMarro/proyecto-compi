@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class ArrayLocation extends Location {
     private String id;
     private Expression index;
@@ -24,5 +26,10 @@ public class ArrayLocation extends Location {
         index.print(indent + "  ");
         printIndent(indent);
         System.out.println("]");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

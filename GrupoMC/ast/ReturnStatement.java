@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class ReturnStatement extends Statement {
     private Expression expression;
 
@@ -16,5 +18,10 @@ public class ReturnStatement extends Statement {
         printIndent(indent);
         System.out.println("ReturnStatement");
         expression.print(indent + "  ");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

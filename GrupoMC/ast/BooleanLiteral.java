@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class BooleanLiteral extends Literal {
     private boolean value;
 
@@ -15,5 +17,10 @@ public class BooleanLiteral extends Literal {
     public void print(String indent) {
         printIndent(indent);
         System.out.println("BooleanLiteral: " + value);
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

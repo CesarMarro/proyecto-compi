@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public abstract class ASTNode {
     public abstract void print(String indent);
     
@@ -7,4 +9,7 @@ public abstract class ASTNode {
     protected void printIndent(String indent) {
         System.out.print(indent);
     }
+    
+    // Método accept para el patrón Visitor
+    public abstract void accept(ASTVisitor visitor);
 }

@@ -1,5 +1,6 @@
 package ast;
 
+import semantic.ASTVisitor;
 import java.util.ArrayList;
 
 public class MethodCall extends Expression {
@@ -31,4 +32,10 @@ public class MethodCall extends Expression {
             }
         }
     }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
+    }
 }
+

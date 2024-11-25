@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public abstract class Location extends Expression {
-    // Implementación...
+    public abstract void accept(ASTVisitor visitor);
 }

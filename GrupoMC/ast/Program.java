@@ -1,5 +1,6 @@
 package ast;
 
+import semantic.ASTVisitor;
 import java.util.ArrayList;
 
 public class Program extends ASTNode {
@@ -20,5 +21,10 @@ public class Program extends ASTNode {
         for (Declaration decl : declarations) {
             decl.print(indent + "  ");
         }
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

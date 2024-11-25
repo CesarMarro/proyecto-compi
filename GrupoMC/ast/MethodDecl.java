@@ -1,5 +1,10 @@
 package ast;
 
+import semantic.ASTVisitor;
+import semantic.Symbol;
+import semantic.SymbolKind;
+import semantic.SymbolTable;
+
 import java.util.ArrayList;
 
 public class MethodDecl extends Declaration {
@@ -46,5 +51,10 @@ public class MethodDecl extends Declaration {
         printIndent(indent + "  ");
         System.out.println("Block:");
         block.print(indent + "    ");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

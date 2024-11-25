@@ -1,5 +1,6 @@
 package ast;
 
+import semantic.ASTVisitor;
 import java.util.ArrayList;
 
 public class FieldDecl extends Declaration {
@@ -27,5 +28,10 @@ public class FieldDecl extends Declaration {
         for (VarDecl varDecl : varDecls) {
             varDecl.print(indent + "  ");
         }
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

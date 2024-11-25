@@ -1,5 +1,6 @@
 package ast;
 
+import semantic.ASTVisitor;
 import java.util.ArrayList;
 
 public class Block extends Statement {
@@ -37,5 +38,10 @@ public class Block extends Statement {
                 stmt.print(indent + "    ");
             }
         }
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

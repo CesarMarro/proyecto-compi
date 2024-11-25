@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class BinaryOpExpression extends Expression {
     private Expression left;
     private String operator;
@@ -33,5 +35,10 @@ public class BinaryOpExpression extends Expression {
         printIndent(indent + "  ");
         System.out.println("Right:");
         right.print(indent + "    ");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

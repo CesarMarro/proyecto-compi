@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class IfStatement extends Statement {
     private Expression condition;
     private Statement thenStmt;
@@ -38,5 +40,10 @@ public class IfStatement extends Statement {
             System.out.println("Else:");
             elseStmt.print(indent + "    ");
         }
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

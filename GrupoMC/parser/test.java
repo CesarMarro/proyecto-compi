@@ -3,6 +3,7 @@ package parser;
 import java.io.FileReader;
 import java_cup.runtime.Symbol;
 import ast.*;
+import semantic.SemanticAnalyzer;
 
 public class test {
     public static void main(String[] args) {
@@ -24,6 +25,20 @@ public class test {
             // Imprimir el AST
             System.out.println("Parsing completado.");
             astRoot.print("");
+
+            // Ejecutar el análisis semántico
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+            astRoot.accept(semanticAnalyzer);
+
+            // Verificar si hay errores semánticos
+            if (semanticAnalyzer.getErrors().isEmpty()) {
+                System.out.println("Análisis semántico completado sin errores.");
+            } else {
+                System.out.println("Errores de análisis semántico encontrados:");
+                for (String error : semanticAnalyzer.getErrors()) {
+                    System.out.println(error);
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

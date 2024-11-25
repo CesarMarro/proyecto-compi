@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class Param extends ASTNode {
     private Type type;
     private String id;
@@ -22,5 +24,10 @@ public class Param extends ASTNode {
         printIndent(indent);
         System.out.println("Param: " + id);
         type.print(indent + "  ");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

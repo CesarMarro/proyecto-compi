@@ -1,5 +1,7 @@
 package ast;
 
+import semantic.ASTVisitor;
+
 public class ForStatement extends Statement {
     private String id;
     private Expression initExpr;
@@ -51,5 +53,10 @@ public class ForStatement extends Statement {
         printIndent(indent + "  ");
         System.out.println("Body:");
         body.print(indent + "    ");
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }
