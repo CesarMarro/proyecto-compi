@@ -9,7 +9,7 @@ import java.util.Stack;
 
 import ast.Type;
 
-class SymbolTable {
+public class SymbolTable {
     private Stack<HashMap<String, Symbol>> scopes;
     private Scope currentScope;
 

@@ -3,13 +3,16 @@ package ast;
 public class Param extends ASTNode {
     private Type type;
     private String id;
+    private int line;
 
-    public Param(Type type, String id) {
+    public Param(Type type, String id, int line) {
         this.type = type;
         this.id = id;
+        this.line = line;
         
     }
-    
+
+
 
     public Type getType() {
         return type;
@@ -18,6 +21,10 @@ public class Param extends ASTNode {
     public String getId() {
         return id;
     }
+    public int getLine() {
+        return line;
+    }
+
 
     @Override
     public void print(String indent) {
@@ -26,7 +33,5 @@ public class Param extends ASTNode {
         type.print(indent + "  ");
     }
 
-    public int getLine() {
-        return 0;
-    }
+    
 }

@@ -609,7 +609,7 @@ public class parser extends java_cup.runtime.lr_parser {
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new VarDecl(id, e); 
+    RESULT = new VarDecl(id, e.toString());
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl",5, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -632,30 +632,30 @@ public class parser extends java_cup.runtime.lr_parser {
     if (!parser.symbolTable.insertMethod(id)) {
       parser.reportSemanticError("Semantic Error: Method '" + id + "' is already declared.");
   }
-  
-  // Enter the method's scope
-  // enterScope();
-  //   // Insert parameters into the symbol table
-  //   for (Param param : pl) {
-  //     String paramName = param.getId();
-  //     Type paramType = param.getType();
-  //     if (!symbolTable.insert(paramName, "parameter")) {
-  //         reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
-  //     }
-  //   }
+  parser.symbolTable.enterScope();
+
+
+  for (Param param : pl) {
+    String paramName = param.getId();
+    Type paramType = param.getType();
+    if (!parser.symbolTable.insert(paramName, paramType.toString())) {
+        parser.reportSemanticError("Semantic Error at line " + (param.getLine() + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
+    }
+}
+
     // Set flags for block processing
-    parser.isParsingMethodBody = true;
-    parser.currentMethodParams = pl;
+    // parser.isParsingMethodBody = true;
+    // parser.currentMethodParams = pl;
     Block b = (Block) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-
-    parser.isParsingMethodBody = false;
-    parser.currentMethodParams = null;
-
-
-    // Build the method declaration
-    // int bleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
-    // int bright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
+    parser.symbolTable.exitScope();
     RESULT = new MethodDecl(t, id, pl, b);
+
+    // parser.isParsingMethodBody = false;
+    // parser.currentMethodParams = null;
+
+
+
+    
 
     CUP$parser$result = parser.getSymbolFactory().newSymbol("method_decl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
@@ -745,7 +745,7 @@ return CUP$parser$result;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
     System.out.println("Parsed parameter: " + id + ", Type: " + t);
-		 RESULT = new Param(t, id); 
+		 RESULT = new Param(t, id, idleft); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("param",10, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -772,28 +772,17 @@ return CUP$parser$result;
           case 20: // block ::= OPEN_BRACE opt_var_decls opt_statements CLOSE_BRACE 
             {
               Block RESULT =null;
-              parser.enterScope();
+
 
               // Insert method parameters into the current scope if parsing method body
-    if (parser.isParsingMethodBody && parser.currentMethodParams != null) {
-      System.out.println("In block: currentMethodParams has " + parser.currentMethodParams.size() + " parameters.");
-      for (Param param : parser.currentMethodParams) {
-          String paramName = param.getId();
-          Type paramType = param.getType();
-          System.out.println("Inserting parameter: " + paramName + ", Type: " + paramType);
-          if (!parser.symbolTable.insert(paramName, paramType.toString())) {
-              parser.reportSemanticError("Semantic Error at line " + (param.getLine() + 1) + ": Parameter '" + paramName + "' is already declared in the current scope.");
-          }
-      }
-  }
 		int ovdleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int ovdright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ArrayList<VarDecl> ovd = (ArrayList<VarDecl>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int osleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int osright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<Statement> os = (ArrayList<Statement>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 RESULT = new Block(ovd, os); 
-     parser.exitScope();
+    RESULT = new Block(ovd, os, parser.symbolTable);
+    //  parser.exitScope();
      CUP$parser$result = parser.getSymbolFactory().newSymbol("block", 11, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
  }
           return CUP$parser$result;
@@ -924,7 +913,7 @@ return CUP$parser$result;
     if (!parser.symbolTable.insert(id, "variable")) {
         parser.reportSemanticError("Semantic Error at line " + (idleft + 1) + ": Variable '" + id + "' is already declared in the current scope.");
     }
-    RESULT = new VarDecl(id, e);
+    RESULT = new VarDecl(id, e.toString());
     CUP$parser$result = parser.getSymbolFactory().newSymbol("var_decl_block_item", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
 }
 return CUP$parser$result;
